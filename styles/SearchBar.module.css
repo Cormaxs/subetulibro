@@ -1,0 +1,63 @@
+/* styles/SearchBar.module.css */
+
+.searchBarWrapper {
+    display: flex;
+    justify-content: center; /* Centrar el formulario */
+    width: 100%;
+}
+
+.searchForm {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+}
+
+.searchInput {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ffffff; /* Borde oscuro */
+    background-color: #fefefe; /* Fondo oscuro */
+    color: #000000; /* Texto claro */
+    flex-grow: 1;
+    min-width: 150px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #fa6a1e; 
+}
+
+.searchButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #fa6a1e; /* Rojo de Netflix */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.searchButton:hover {
+    background-color: #f45d0b; /* Rojo más claro */
+}
+
+.clearButton {
+    padding: 12px 15px;
+    font-size: 1rem;
+    background-color: #424242; /* Gris oscuro */
+    color: #f1f1f1;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.clearButton:hover {
+    background-color: #555; /* Gris más claro */
+}

@@ -1,0 +1,64 @@
+/* styles/BookGrid.module.css */
+
+.booksGrid {
+    display: grid;
+    /* Cambiamos a 5 columnas para 2 filas de 5 libros cada una */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    width: 100%;
+    /* Cambiamos a 100% para que las columnas sean más grandes */
+    max-width: 87%; 
+    margin: 0 auto; /* Centramos el grid */
+    padding: 20px 0;
+    justify-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.booksGrid.loading {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.noResults {
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 60px 20px;
+    color: #9ca3af;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* RESPONSIVE PARA MEJOR VISUALIZACIÓN */
+@media (max-width: 1200px) {
+    .booksGrid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        padding: 18px 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .booksGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 16px 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .booksGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        padding: 14px 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .booksGrid {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 12px;
+        padding: 12px 15px;
+    }
+}

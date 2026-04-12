@@ -1,0 +1,154 @@
+/* styles/BookCard.module.css */
+
+.bookCard {
+    width: 100%;
+    /* Quitamos el max-width fijo para que el grid mande */
+    display: flex;
+    flex-direction: column;
+    background-color: #1a1a1a; /* Fondo muy oscuro, no negro puro */
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #262626;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+}
+
+.bookCard:hover {
+    transform: translateY(-8px);
+    border-color: #404040;
+    z-index: 5;
+}
+
+.bookCoverWrapper {
+    width: 100%;
+    padding-top: 145%; /* Ratio un poco más estilizado */
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.bookCover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.bookCard:hover .bookCover {
+    transform: scale(1.05); /* Zoom suave a la imagen al hacer hover */
+}
+
+/* Badges Minimalistas */
+.fileBadge, .premiumBadge {
+    position: absolute;
+    top: 8px;
+    z-index: 10;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.fileBadge {
+    right: 8px;
+    background-color: #e50914; /* Rojo sobrio */
+    color: #fff;
+}
+
+.premiumBadge {
+    left: 8px;
+    background-color: #f1c40f;
+    color: #000;
+}
+
+/* CONTENIDO - Limpio y oscuro */
+.cardContent {
+    padding: 12px;
+    width: 100%;
+    text-align: left; /* Alineado a la izquierda se ve más serio y confiable */
+}
+
+.cardTitle {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #ffffff;
+    font-weight: 600;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardAuthor {
+    font-size: 0.8rem;
+    color: #a3a3a3;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ratingSection {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.starsContainer {
+    color: #f1c40f;
+    font-size: 0.8rem;
+}
+
+.starEmpty {
+    color: #404040;
+}
+
+.ratingCount {
+    font-size: 0.7rem;
+    color: #737373;
+}
+
+/* PLACEHOLDER PARA IMAGEN NO DISPONIBLE */
+.placeholderCover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.placeholderIcon {
+    font-size: 3rem;
+    opacity: 0.6;
+}
+
+.placeholderText {
+    font-size: 0.75rem;
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Ajustes Móvil */
+@media (max-width: 480px) {
+    .cardContent {
+        padding: 8px;
+    }
+    .cardTitle {
+        font-size: 0.85rem;
+    }
+}

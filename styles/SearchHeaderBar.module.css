@@ -1,0 +1,525 @@
+/* styles/SearchHeaderBar.module.css */
+
+.searchContainer {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.searchForm {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.inputWrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 10px 15px;
+    padding-right: 35px;
+    font-size: 0.95rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: #1e293b;
+    transition: all 0.2s ease;
+    outline: none;
+    font-weight: 500;
+}
+
+.searchInput:focus {
+    border-color: #f97316;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.searchInput::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.clearIcon {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.clearIcon:hover {
+    color: #f97316;
+}
+
+.searchButton {
+    padding: 10px 16px;
+    font-size: 1.1rem;
+    background-color: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    font-weight: 600;
+}
+
+.searchButton:hover {
+    background-color: #ea580c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.searchButton:active {
+    transform: translateY(0);
+}
+
+.filterButton {
+    padding: 10px 12px;
+    font-size: 1rem;
+    background-color: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    font-weight: 600;
+}
+
+.filterButton:hover {
+    background-color: #4b5563;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+.filterButton:active {
+    transform: translateY(0);
+}
+
+.filterButtonActive {
+    background-color: #f97316;
+}
+
+.filterButtonActive:hover {
+    background-color: #ea580c;
+}
+
+/* CONTENEDOR DE FILTROS */
+.filtersContainer {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1002;
+    padding: 16px;
+    animation: slideDown 0.2s ease-out;
+}
+
+.filtersGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filterLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.filterSelect,
+.filterInput {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: #f9fafb;
+    color: #1f2937;
+    transition: border-color 0.2s;
+}
+
+.filterSelect:focus,
+.filterInput:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+}
+
+.filterActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.clearFiltersButton {
+    padding: 6px 12px;
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #6b7280;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clearFiltersButton:hover {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+/* DROPDOWN DE SUGERENCIAS */
+.suggestionsContainer {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+}
+
+.suggestionsWrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: 450px;
+}
+
+.suggestionsDropdown {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggestionsDropdown li {
+    padding: 0;
+}
+
+.suggestionItem {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.15s;
+    color: inherit;
+}
+
+.suggestionItem:hover,
+.suggestionItem.selected {
+    background-color: #f1f5f9;
+}
+
+.bookCover {
+    width: 40px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+}
+
+.bookCoverPlaceholder {
+    width: 40px;
+    height: 56px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.suggestionContent {
+    flex-grow: 1;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.suggestionTitle {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.suggestionAuthor {
+    font-size: 0.85rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.viewAllButton {
+    width: 100%;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.viewAllButton:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #d94b0d 100%);
+    transform: translateY(-1px);
+}
+
+.viewAllButton:active {
+    transform: translateY(0);
+}
+
+.loadingMessage {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    animation: slideDown 0.2s ease-out;
+}
+
+/* RESPONSIVE - TABLET */
+@media (max-width: 1000px) {
+    .searchContainer {
+        max-width: 350px;
+    }
+
+    .searchInput {
+        font-size: 0.9rem;
+        padding: 9px 12px;
+        padding-right: 32px;
+    }
+
+    .searchButton {
+        min-width: 40px;
+        height: 40px;
+        padding: 8px 12px;
+    }
+
+    .bookCover {
+        width: 35px;
+        height: 50px;
+    }
+
+    .suggestionTitle {
+        font-size: 0.9rem;
+    }
+
+    .suggestionAuthor {
+        font-size: 0.8rem;
+    }
+}
+
+/* RESPONSIVE - MOBILE */
+@media (max-width: 850px) {
+    .searchContainer {
+        position: fixed;
+        top: 16px;
+        left: 60px;
+        right: 50px;
+        max-width: none;
+        width: auto;
+        margin: 0;
+        z-index: 998;
+    }
+
+    .searchForm {
+        gap: 6px;
+    }
+
+    .searchInput {
+        font-size: 0.9rem;
+        padding: 9px 12px;
+        padding-right: 32px;
+        border: 2px solid #e2e8f0;
+    }
+
+    .searchButton {
+        min-width: 40px;
+        height: 40px;
+        padding: 8px;
+        font-size: 1rem;
+    }
+
+    .filterButton {
+        min-width: 40px;
+        height: 40px;
+        padding: 8px;
+        font-size: 1rem;
+    }
+
+    .suggestionsDropdown {
+        position: fixed;
+        top: 60px;
+        left: 12px;
+        right: 12px;
+        width: calc(100% - 24px);
+        max-width: none;
+        max-height: 300px;
+    }
+
+    .loadingMessage {
+        position: fixed;
+        top: 60px;
+        left: 12px;
+        right: 12px;
+        width: calc(100% - 24px);
+        max-width: none;
+    }
+
+    .suggestionsContainer {
+        position: fixed;
+        top: 60px;
+        left: 12px;
+        right: 12px;
+        width: calc(100% - 24px);
+        max-width: none;
+        border-radius: 8px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        z-index: 1001;
+    }
+
+    .suggestionsWrapper {
+        max-height: 300px;
+    }
+
+    .suggestionsDropdown {
+        position: static;
+        width: 100%;
+        max-width: none;
+        max-height: none;
+        flex: 1;
+    }
+
+    .filtersContainer {
+        position: fixed;
+        top: 60px;
+        left: 12px;
+        right: 12px;
+        width: calc(100% - 24px);
+        max-width: none;
+        border-radius: 8px;
+        z-index: 1002;
+    }
+
+    .filtersGrid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .bookCover {
+        width: 32px;
+        height: 45px;
+    }
+
+    .suggestionTitle {
+        font-size: 0.9rem;
+    }
+
+    .suggestionAuthor {
+        font-size: 0.8rem;
+    }
+
+    .viewAllButton {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        border-top: 1px solid #e2e8f0;
+        border-radius: 0;
+        flex-shrink: 0;
+    }
+}
+
+/* SCROLL PERSONALIZADO */
+.suggestionsDropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.suggestionsDropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.suggestionsDropdown::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+}
+
+.suggestionsDropdown::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
