@@ -13,21 +13,20 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [imageErrors, setImageErrors] = useState({}); // Estado para errores de imagen
+    const [imageErrors, setImageErrors] = useState({});
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
         fileType: '',
-        category: '',
-        author: '',
-        language: '',
+        categorias: '',      // Cambiado de 'category' a 'categorias'
+        autor: '',           // Cambiado de 'author' a 'autor'
+        idioma: '',          // Cambiado de 'language' a 'idioma'
+        anio: '',            // NUEVO: filtro por año
         isPremium: ''
     });
     const searchContainerRef = useRef(null);
-    const timeoutRef = useRef(null);
 
     // Obtener sugerencias mientras el usuario escribe
     const getSuggestions = useCallback(async (searchTerm) => {
-        // Permitir búsqueda si hay query o si hay filtros activos
         const hasQuery = searchTerm && searchTerm.trim() && searchTerm.length >= 2;
         const hasActiveFilters = Object.values(filters).some(v => v !== '');
 
@@ -39,19 +38,18 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
 
         setIsLoading(true);
         try {
-            // Construir parámetros de búsqueda con filtros
             const searchParams = { limit: 8 };
             if (hasQuery) searchParams.q = searchTerm;
             if (filters.fileType) searchParams.fileType = filters.fileType;
-            if (filters.category) searchParams.category = filters.category;
-            if (filters.author) searchParams.author = filters.author;
-            if (filters.language) searchParams.language = filters.language;
+            if (filters.categorias) searchParams.categorias = filters.categorias;
+            if (filters.autor) searchParams.autor = filters.autor;
+            if (filters.idioma) searchParams.idioma = filters.idioma;
+            if (filters.anio) searchParams.anio = filters.anio;
             if (filters.isPremium) searchParams.isPremium = filters.isPremium;
 
             const data = await fetchBooks(searchParams);
             const books = data.books || [];
             
-            // Extraer libros únicos para mostrar como sugerencias
             const uniqueBooks = [];
             const seenIds = new Set();
             
@@ -60,8 +58,6 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
                     seenIds.add(book._id);
                     const slug = createSlug(book.titulo);
                     const uniqueSlug = `${slug}-${book._id}`;
-                    
-                    // Decodificar entidades HTML en la URL de la portada
                     const decodedPortada = book.portada ? book.portada.replace(/&amp;/g, '&') : '';
                     
                     uniqueBooks.push({
@@ -75,9 +71,7 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
             });
             
             setSuggestions(uniqueBooks);
-            if (uniqueBooks.length > 0) {
-                setIsOpen(true);
-            }
+            if (uniqueBooks.length > 0) setIsOpen(true);
         } catch (error) {
             console.error('Error fetching suggestions:', error);
             setSuggestions([]);
@@ -86,7 +80,7 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         }
     }, [filters]);
 
-    // Búsqueda en tiempo real - sin debounce para reactividad inmediata
+    // Búsqueda en tiempo real
     useEffect(() => {
         if (query.trim().length >= 2) {
             getSuggestions(query);
@@ -96,74 +90,63 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         }
     }, [query, getSuggestions]);
 
-    // Cerrar sugerencias cuando el usuario hace clic fuera
+    // Cerrar sugerencias al hacer clic fuera
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
                 setIsOpen(false);
+                setShowFilters(false);
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const buildSearchUrl = useCallback((searchQuery = query, currentFilters = filters) => {
+        const trimmedQuery = searchQuery.trim();
+        const hasActiveFilters = Object.values(currentFilters).some(v => v !== '');
+        
+        if (!trimmedQuery && !hasActiveFilters) return null;
+        
+        let url = `${basePath}?page=1&limit=12`;
+        if (trimmedQuery) url += `&q=${encodeURIComponent(trimmedQuery)}`;
+        if (currentFilters.fileType) url += `&fileType=${encodeURIComponent(currentFilters.fileType)}`;
+        if (currentFilters.categorias) url += `&categorias=${encodeURIComponent(currentFilters.categorias)}`;
+        if (currentFilters.autor) url += `&autor=${encodeURIComponent(currentFilters.autor)}`;
+        if (currentFilters.idioma) url += `&idioma=${encodeURIComponent(currentFilters.idioma)}`;
+        if (currentFilters.anio) url += `&anio=${encodeURIComponent(currentFilters.anio)}`;
+        if (currentFilters.isPremium) url += `&isPremium=${encodeURIComponent(currentFilters.isPremium)}`;
+        
+        return url;
+    }, [basePath]);
+
     const handleSearch = useCallback((e, searchQuery = query) => {
         e?.preventDefault();
-        const trimmedQuery = searchQuery.trim();
-        const hasActiveFilters = Object.values(filters).some(v => v !== '');
-
-        // Permitir búsqueda si hay query o filtros activos
-        if (!trimmedQuery && !hasActiveFilters) return;
-
+        const url = buildSearchUrl(searchQuery, filters);
+        if (!url) return;
+        
         setIsOpen(false);
         setSuggestions([]);
         setQuery('');
-        
         sessionStorage.removeItem('last_catalog_page');
-        
-        // Construir URL con filtros
-        let url = `${basePath}?page=1&limit=12`;
-        if (trimmedQuery) url += `&q=${encodeURIComponent(trimmedQuery)}`;
-        if (filters.fileType) url += `&fileType=${encodeURIComponent(filters.fileType)}`;
-        if (filters.category) url += `&categorias=${encodeURIComponent(filters.category)}`;
-        if (filters.author) url += `&autor=${encodeURIComponent(filters.author)}`;
-        if (filters.language) url += `&idioma=${encodeURIComponent(filters.language)}`;
-        if (filters.isPremium) url += `&isPremium=${encodeURIComponent(filters.isPremium)}`;
-        
         router.push(url);
-    }, [query, router, filters, basePath]);
+    }, [query, filters, buildSearchUrl, router]);
 
     const handleViewAllResults = useCallback(() => {
-        const trimmedQuery = query.trim();
-        const hasActiveFilters = Object.values(filters).some(v => v !== '');
-
-        // Permitir búsqueda si hay query o filtros activos
-        if (!trimmedQuery && !hasActiveFilters) return;
-
+        const url = buildSearchUrl(query, filters);
+        if (!url) return;
+        
         setIsOpen(false);
         setSuggestions([]);
         setQuery('');
-        
         sessionStorage.removeItem('last_catalog_page');
-        
-        // Construir URL con filtros
-        let url = `${basePath}?page=1&limit=12`;
-        if (trimmedQuery) url += `&q=${encodeURIComponent(trimmedQuery)}`;
-        if (filters.fileType) url += `&fileType=${encodeURIComponent(filters.fileType)}`;
-        if (filters.category) url += `&categorias=${encodeURIComponent(filters.category)}`;
-        if (filters.author) url += `&autor=${encodeURIComponent(filters.author)}`;
-        if (filters.language) url += `&idioma=${encodeURIComponent(filters.language)}`;
-        if (filters.isPremium) url += `&isPremium=${encodeURIComponent(filters.isPremium)}`;
-        
         router.push(url);
-    }, [query, router, filters, basePath]);
+    }, [query, filters, buildSearchUrl, router]);
 
     const handleSuggestionClick = (suggestion) => {
         setQuery('');
         setIsOpen(false);
         setSuggestions([]);
-        // Abrir el libro directamente
         router.push(`/seeBook/${suggestion.slug}`);
     };
 
@@ -171,15 +154,11 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                setSelectedIndex(prev => 
-                    prev < suggestions.length - 1 ? prev + 1 : 0
-                );
+                setSelectedIndex(prev => prev < suggestions.length - 1 ? prev + 1 : 0);
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                setSelectedIndex(prev => 
-                    prev > 0 ? prev - 1 : suggestions.length - 1
-                );
+                setSelectedIndex(prev => prev > 0 ? prev - 1 : suggestions.length - 1);
                 break;
             case 'Enter':
                 e.preventDefault();
@@ -208,36 +187,29 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         setSuggestions([]);
         setIsOpen(false);
         setSelectedIndex(-1);
-        setImageErrors({}); // Limpiar errores de imagen
+        setImageErrors({});
     };
 
     const handleImageError = (bookId) => {
-        setImageErrors(prev => ({
-            ...prev,
-            [bookId]: true
-        }));
+        setImageErrors(prev => ({ ...prev, [bookId]: true }));
     };
 
     const handleFilterChange = (filterType, value) => {
-        setFilters(prev => ({
-            ...prev,
-            [filterType]: value
-        }));
+        setFilters(prev => ({ ...prev, [filterType]: value }));
     };
 
     const clearFilters = () => {
         setFilters({
             fileType: '',
-            category: '',
-            author: '',
-            language: '',
+            categorias: '',
+            autor: '',
+            idioma: '',
+            anio: '',
             isPremium: ''
         });
     };
 
-    const toggleFilters = () => {
-        setShowFilters(!showFilters);
-    };
+    const toggleFilters = () => setShowFilters(!showFilters);
 
     return (
         <div className={styles.searchContainer} ref={searchContainerRef}>
@@ -255,51 +227,19 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
                         autoComplete="off"
                     />
                     {query && (
-                        <button
-                            type="button"
-                            onClick={handleClear}
-                            className={styles.clearIcon}
-                            aria-label="Limpiar búsqueda"
-                            title="Limpiar"
-                        >
-                            ✕
-                        </button>
+                        <button type="button" onClick={handleClear} className={styles.clearIcon} aria-label="Limpiar búsqueda">✕</button>
                     )}
                 </div>
-
-                <button
-                    type="submit"
-                    className={styles.searchButton}
-                    aria-label="Buscar"
-                >
-                    🔍
-                </button>
-                
-                <button
-                    type="button"
-                    onClick={toggleFilters}
-                    className={`${styles.filterButton} ${showFilters ? styles.filterButtonActive : ''}`}
-                    aria-label="Mostrar filtros"
-                    title="Filtros avanzados"
-                >
-                    ⚙️
-                </button>
+                <button type="submit" className={styles.searchButton} aria-label="Buscar">🔍</button>
+                <button type="button" onClick={toggleFilters} className={`${styles.filterButton} ${showFilters ? styles.filterButtonActive : ''}`} aria-label="Filtros">⚙️</button>
             </form>
 
-            {/* FILTROS AVANZADOS */}
             {showFilters && (
                 <div className={styles.filtersContainer}>
                     <div className={styles.filtersGrid}>
                         <div className={styles.filterGroup}>
-                            <label htmlFor="fileType" className={styles.filterLabel}>
-                                Formato
-                            </label>
-                            <select
-                                id="fileType"
-                                value={filters.fileType}
-                                onChange={(e) => handleFilterChange('fileType', e.target.value)}
-                                className={styles.filterSelect}
-                            >
+                            <label htmlFor="fileType" className={styles.filterLabel}>Formato</label>
+                            <select id="fileType" value={filters.fileType} onChange={(e) => handleFilterChange('fileType', e.target.value)} className={styles.filterSelect}>
                                 <option value="">Todos</option>
                                 <option value="epub">EPUB</option>
                                 <option value="pdf">PDF</option>
@@ -307,45 +247,17 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
                                 <option value="txt">TXT</option>
                             </select>
                         </div>
-                        
                         <div className={styles.filterGroup}>
-                            <label htmlFor="category" className={styles.filterLabel}>
-                                Categoría
-                            </label>
-                            <input
-                                type="text"
-                                id="category"
-                                value={filters.category}
-                                onChange={(e) => handleFilterChange('category', e.target.value)}
-                                placeholder="Ej: Romance, Ciencia Ficción..."
-                                className={styles.filterInput}
-                            />
+                            <label htmlFor="categorias" className={styles.filterLabel}>Categoría</label>
+                            <input type="text" id="categorias" value={filters.categorias} onChange={(e) => handleFilterChange('categorias', e.target.value)} placeholder="Ej: Romance, Ciencia Ficción..." className={styles.filterInput} />
                         </div>
-                        
                         <div className={styles.filterGroup}>
-                            <label htmlFor="author" className={styles.filterLabel}>
-                                Autor
-                            </label>
-                            <input
-                                type="text"
-                                id="author"
-                                value={filters.author}
-                                onChange={(e) => handleFilterChange('author', e.target.value)}
-                                placeholder="Nombre del autor..."
-                                className={styles.filterInput}
-                            />
+                            <label htmlFor="autor" className={styles.filterLabel}>Autor</label>
+                            <input type="text" id="autor" value={filters.autor} onChange={(e) => handleFilterChange('autor', e.target.value)} placeholder="Nombre del autor..." className={styles.filterInput} />
                         </div>
-                        
                         <div className={styles.filterGroup}>
-                            <label htmlFor="language" className={styles.filterLabel}>
-                                Idioma
-                            </label>
-                            <select
-                                id="language"
-                                value={filters.language}
-                                onChange={(e) => handleFilterChange('language', e.target.value)}
-                                className={styles.filterSelect}
-                            >
+                            <label htmlFor="idioma" className={styles.filterLabel}>Idioma</label>
+                            <select id="idioma" value={filters.idioma} onChange={(e) => handleFilterChange('idioma', e.target.value)} className={styles.filterSelect}>
                                 <option value="">Todos</option>
                                 <option value="es">Español</option>
                                 <option value="en">Inglés</option>
@@ -357,97 +269,51 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
                                 <option value="zh">Chino</option>
                             </select>
                         </div>
-                        
                         <div className={styles.filterGroup}>
-                            <label htmlFor="isPremium" className={styles.filterLabel}>
-                                Tipo
-                            </label>
-                            <select
-                                id="isPremium"
-                                value={filters.isPremium}
-                                onChange={(e) => handleFilterChange('isPremium', e.target.value)}
-                                className={styles.filterSelect}
-                            >
+                            <label htmlFor="anio" className={styles.filterLabel}>Año</label>
+                            <input type="number" id="anio" value={filters.anio} onChange={(e) => handleFilterChange('anio', e.target.value)} placeholder="Ej: 2024" className={styles.filterInput} min="1900" max="2030" step="1" />
+                        </div>
+                        <div className={styles.filterGroup}>
+                            <label htmlFor="isPremium" className={styles.filterLabel}>Tipo</label>
+                            <select id="isPremium" value={filters.isPremium} onChange={(e) => handleFilterChange('isPremium', e.target.value)} className={styles.filterSelect}>
                                 <option value="">Todos</option>
                                 <option value="true">Solo Premium</option>
                                 <option value="false">Solo Gratis</option>
                             </select>
                         </div>
                     </div>
-                    
                     <div className={styles.filterActions}>
-                        <button
-                            type="button"
-                            onClick={clearFilters}
-                            className={styles.clearFiltersButton}
-                        >
-                            Limpiar filtros
-                        </button>
+                        <button type="button" onClick={clearFilters} className={styles.clearFiltersButton}>Limpiar filtros</button>
                     </div>
                 </div>
             )}
 
-            {/* SUGERENCIAS DROPDOWN */}
             {isOpen && suggestions.length > 0 && (
                 <div className={styles.suggestionsContainer}>
                     <div className={styles.suggestionsWrapper}>
                         <ul className={styles.suggestionsDropdown}>
                             {suggestions.map((suggestion, index) => (
                                 <li key={suggestion._id}>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleSuggestionClick(suggestion)}
-                                        className={`${styles.suggestionItem} ${
-                                            index === selectedIndex ? styles.selected : ''
-                                        }`}
-                                    >
+                                    <button type="button" onClick={() => handleSuggestionClick(suggestion)} className={`${styles.suggestionItem} ${index === selectedIndex ? styles.selected : ''}`}>
                                         {isValidImageUrl(suggestion.portada) && !imageErrors[suggestion._id] ? (
-                                            <Image
-                                                src={suggestion.portada}
-                                                alt={suggestion.titulo}
-                                                className={styles.bookCover}
-                                                width={60}
-                                                height={80}
-                                                onError={() => handleImageError(suggestion._id)}
-                                                placeholder="blur"
-                                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEB//EACUQAAIBAwMEAwEBAAAAAAAAAAECAwAEEQUSITFBURNhcZEigf/EABUBAFEAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8A4+iiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q=="
-                                            />
+                                            <Image src={suggestion.portada} alt={suggestion.titulo} className={styles.bookCover} width={60} height={80} onError={() => handleImageError(suggestion._id)} placeholder="blur" blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEB//EACUQAAIBAwMEAwEBAAAAAAAAAAECAwAEEQUSITFBURNhcZEigf/EABUBAQEAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8A4+iiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" />
                                         ) : (
-                                            <div className={styles.bookCoverPlaceholder}>
-                                                📕
-                                            </div>
+                                            <div className={styles.bookCoverPlaceholder}>📕</div>
                                         )}
                                         <div className={styles.suggestionContent}>
-                                            <div className={styles.suggestionTitle}>
-                                                {suggestion.titulo}
-                                            </div>
-                                            {suggestion.autor && (
-                                                <div className={styles.suggestionAuthor}>
-                                                    {suggestion.autor}
-                                                </div>
-                                            )}
+                                            <div className={styles.suggestionTitle}>{suggestion.titulo}</div>
+                                            {suggestion.autor && <div className={styles.suggestionAuthor}>{suggestion.autor}</div>}
                                         </div>
                                     </button>
                                 </li>
                             ))}
                         </ul>
-                        <button
-                            type="button"
-                            onClick={handleViewAllResults}
-                            className={styles.viewAllButton}
-                        >
-                            Ver todos los resultados
-                        </button>
+                        <button type="button" onClick={handleViewAllResults} className={styles.viewAllButton}>Ver todos los resultados</button>
                     </div>
                 </div>
             )}
 
-            {/* ESTADO DE CARGA */}
-            {isLoading && query.length >= 2 && (
-                <div className={styles.loadingMessage}>
-                    Buscando...
-                </div>
-            )}
+            {isLoading && query.length >= 2 && <div className={styles.loadingMessage}>Buscando...</div>}
         </div>
     );
 };

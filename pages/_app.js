@@ -1,51 +1,34 @@
 // pages/_app.js
-
 import Script from 'next/script';
 import '../styles/global.css';
 
-// Tu ID de seguimiento de Google Analytics
+// ID de seguimiento de Google Analytics
 const GA_TRACKING_ID = 'G-91ZR1GVTG1';
 
-// Tu ID de Google AdSense
+// ID de Google AdSense
 const ADSENSE_PUB_ID = 'ca-pub-5933305559914134';
 
 export default function MyApp({ Component, pageProps }) {
-
   return (
     <>
-      {/* ¡IMPORTANTE! Eliminamos la etiqueta <head> que causaba el error.
-        Los scripts de terceros se inyectan correctamente usando <Script>.
-        
-        Si necesitas la meta tag de verificación de AdSense (meta name="google-adsense-account"), 
-        deberías colocarla en un componente <Head> de 'next/head' dentro de tu Layout.
-      */}
-
-      {/* ====================================================
-        1. SCRIPT DE GOOGLE ADSENSE (Cargador Principal) 🚀
-        ====================================================
-        Estrategia "afterInteractive" (o "lazyOnload"): Carga el script después de que la 
-        página se vuelve interactiva, minimizando el impacto en el rendimiento inicial (LCP).
-     */}
+      {/* 1. SCRIPT DE GOOGLE ADSENSE */}
       <Script
-        async 
+        id="adsbygoogle-init"
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}`}
-        strategy="afterInteractive" 
+        strategy="afterInteractive"
         crossOrigin="anonymous"
+        onError={(e) => {
+          console.error("AdSense script failed to load", e);
+        }}
       /> 
       
-      {/* ====================================================
-        2. SCRIPT PRINCIPAL DE ANALYTICS (Cargador de gtag.js)
-        ====================================================
-      */}
+      {/* 2. SCRIPT DE GOOGLE ANALYTICS (gtag.js) */}
       <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
       />
 
-      {/* ====================================================
-        3. SCRIPT DE CONFIGURACIÓN DE ANALYTICS (Inicialización)
-        ====================================================
-     */}
+      {/* 3. CONFIGURACIÓN DE ANALYTICS */}
       <Script
         id="google-analytics-init"
         strategy="afterInteractive"
@@ -60,8 +43,8 @@ export default function MyApp({ Component, pageProps }) {
           `,
         }}
       />
- 
-      {/* Tu estructura de aplicación original */}
+
+      {/* Renderizado de la aplicación */}
       <Component {...pageProps} />
     </>
   );

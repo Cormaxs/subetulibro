@@ -1,280 +1,350 @@
-/* styles/BookCarousel.module.css */
+/* ============================================
+   BookCarousel.module.css
+   Estilo inspirado en Disney+ / HBO Max
+   Con botones visibles en todos los dispositivos
+   ============================================ */
 
+/* Contenedor principal del carrusel */
 .carouselContainer {
-    margin: 1.5rem 0;
-    padding: 1.5rem 0;
-    background: transparent;
-    border-radius: 0;
-    box-shadow: none;
-    position: relative;
-    overflow: hidden;
-    border: none;
+  margin: 2rem 0;
+  padding: 1rem 0;
+  background: transparent;
+  position: relative;
 }
 
-.carouselContainer::before {
-    display: none;
-}
-
+/* Título de la sección */
 .title {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #2d3748;
-    text-align: left;
-    font-weight: 600;
-    position: relative;
-    z-index: 2;
-    letter-spacing: 0.3px;
-    padding: 0 60px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: #ffffff;
+  padding: 0 4%;
+  letter-spacing: -0.2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* ============================================
+   ESTRUCTURA EMBLA (Carrusel táctil)
+   ============================================ */
 .carousel {
-    position: relative;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    padding: 0 60px;
+  position: relative;
+  padding: 0 4%;
 }
 
-.carouselTrack {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    padding: 0 20px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    transition: scroll-behavior 0.3s ease;
+/* Viewport: oculta el desborde y crea capa GPU */
+.emblaViewport {
+  overflow: hidden;
+  width: 100%;
+  transform: translateZ(0);
+  will-change: scroll-position;
 }
 
-.carouselTrack::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
+/* Contenedor flexible de los slides */
+.emblaContainer {
+  display: flex;
+  backface-visibility: hidden;
+  touch-action: pan-y pinch-zoom;
+  margin-left: -12px;
 }
 
-.carouselItem {
-    flex: 0 0 auto;
-    width: 180px;
-    min-width: 180px;
-    max-width: 180px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 12px;
-    overflow: hidden;
-    scroll-snap-align: start;
+/* Cada slide: tamaño fijo y proporción 2:3 (estilo póster) */
+.emblaSlide {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding-left: 12px;
+  width: 200px;                /* Ancho base en desktop */
+  aspect-ratio: 2 / 3;        /* Altura automática consistente */
+  transform: translateZ(0);
+  will-change: transform;
+  contain: layout style paint;
 }
 
-.carouselItem:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    z-index: 3;
+/* El contenido interno (BookCard) ocupa todo el slide */
+.emblaSlide > * {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;         /* Esquinas "puntiagudas" pero modernas */
+  overflow: hidden;
 }
 
+/* ============================================
+   BOTONES DE NAVEGACIÓN (siempre visibles)
+   ============================================ */
 .prevButton,
 .nextButton {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: #2d3748;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.5rem;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    opacity: 0;
-    visibility: hidden;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 300;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.prevButton:hover:not(:disabled),
-.nextButton:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+.prevButton:hover,
+.nextButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-50%) scale(1.05);
 }
 
-.prevButton.visible,
-.nextButton.visible {
-    opacity: 1;
-    visibility: visible;
+.prevButton:active,
+.nextButton:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 .prevButton {
-    left: 20px;
+  left: 1%;
 }
 
 .nextButton {
-    right: 20px;
+  right: 1%;
 }
 
-.indicators {
-    display: none;
+/* ============================================
+   BARRA DE PROGRESO (estilo Disney+)
+   ============================================ */
+.scrollProgress {
+  position: relative;
+  height: 4px;
+  width: 120px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 24px auto 0;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.indicator {
-    display: none;
+.scrollProgressBar {
+  position: absolute;
+  background: #ffffff;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  will-change: transform;
+  /* Sin transition para movimiento directo desde JS */
 }
 
-.indicator.active {
-    display: none;
+/* ============================================
+   TARJETAS (BookCard) - Estilo premium
+   ============================================ */
+.bookCard {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #0f0f0f;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
-.loading {
-    text-align: center;
-    padding: 4rem;
-    font-size: 1.4rem;
-    color: #2d3748;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    margin: 20px;
+.bookCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.bookCoverWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.bookCover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.bookCard:hover .bookCover {
+  transform: scale(1.02);
+}
+
+.placeholderCover {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.placeholderIcon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.premiumBadge,
+.fileBadge {
+  position: absolute;
+  top: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: bold;  color: #ffd966;
+  z-index: 2;
+}
+
+.premiumBadge {
+  left: 8px;
+}
+
+.fileBadge {
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #00e5ff;
+}
+
+.cardContent {
+  padding: 12px 10px;
+  background: #0f0f0f;
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardAuthor {
+  font-size: 0.75rem;
+  color: #b0b0b0;
+  margin: 0 0 8px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ratingSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.starsContainer {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  color: #ffc107;
+  font-size: 0.75rem;
+}
+
+.starEmpty {
+  color: #555;
+  font-size: 0.75rem;
+}
+
+.ratingCount {
+  font-size: 0.7rem;
+  color: #888;
+}
+
+/* ============================================
+   RESPONSIVE (botones visibles y adaptados)
+   ============================================ */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .emblaSlide {
+    width: 150px;
+  }
+
+  /* Botones más pequeños pero siempre visibles */
+  .prevButton,
+  .nextButton {
+    width: 40px;
+    height: 40px;
+    font-size: 1.8rem;
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
+  }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 1200px) {
-    .carouselTrack {
-        gap: 18px;
-    }
-    .carouselItem {
-        width: 160px;
-        min-width: 160px;
-        max-width: 160px;
-    }
-    .title {
-        font-size: 1.4rem;
-        padding: 0 2rem;
-    }
-}
+  .prevButton {
+    left: 0.5%;
+  }
 
-@media (max-width: 900px) {
-    .carousel {
-        padding: 0 40px;
-        overflow: visible;
-    }
-    .carouselTrack {
-        gap: 16px;
-        padding: 0 10px;
-    }
-    .carouselItem {
-        width: 140px;
-        min-width: 140px;
-        max-width: 140px;
-        flex-shrink: 0;
-    }
-    .prevButton,
-    .nextButton {
-        width: 48px;
-        height: 48px;
-        font-size: 1.3rem;
-    }
-    .title {
-        font-size: 1.4rem;
-        margin-bottom: 1.5rem;
-        padding: 0 40px;
-    }
-}
+  .nextButton {
+    right: 0.5%;
+  }
 
-@media (max-width: 600px) {
-    .carouselContainer {
-        margin: 1.5rem 0;
-        padding: 1rem 0;
-        border-radius: 0;
-    }
-    .carousel {
-        padding: 0 20px;
-        overflow: visible;
-    }
-    .carouselTrack {
-        gap: 12px;
-        padding: 0 10px;
-        overflow: visible;
-    }
-    .carouselItem {
-        width: 140px;
-        min-width: 140px;
-        max-width: 140px;
-        flex-shrink: 0;
-    }
-    .prevButton,
-    .nextButton {
-        width: 48px;
-        height: 48px;
-        font-size: 1.3rem;
-        z-index: 20;
-        background: rgba(255, 255, 255, 0.95);
-        border: 2px solid rgba(0, 0, 0, 0.1);
-        opacity: 1;
-        visibility: visible;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    .prevButton {
-        left: 5px;
-    }
-    .nextButton {
-        right: 5px;
-    }
-    .title {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
-        padding: 0 20px;
-    }
-    .indicators {
-        margin-top: 1.5rem;
-        gap: 8px;
-    }
+  .cardTitle {
+    font-size: 0.8rem;
+  }
+
+  .cardAuthor {
+    font-size: 0.7rem;
+  }
 }
 
 @media (max-width: 480px) {
-    .carouselItem {
-        width: 130px;
-        min-width: 130px;
-        max-width: 130px;
-        margin: 0 auto;
-        scroll-snap-align: none;
-    }
-    .carouselTrack {
-        gap: 10px;
-        justify-content: flex-start;
-        overflow: visible;
-        scroll-snap-type: none;
-    }
-    .prevButton,
-    .nextButton {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-        z-index: 25;
-        background: rgba(255, 255, 255, 0.95);
-        border: 2px solid rgba(0, 0, 0, 0.1);
-        opacity: 1;
-        visibility: visible;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    .prevButton.visible,
-    .nextButton.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-    .prevButton {
-        left: 5px;
-    }
-    .nextButton {
-        right: 5px;
-    }
-    .title {
-        font-size: 1.2rem;
-        padding: 0 20px;
-    }
+  .emblaSlide {
+    width: 130px;
+  }
+
+  .scrollProgress {
+    width: 80px;
+    height: 3px;
+  }
+
+  .cardContent {
+    padding: 8px 6px;
+  }
+
+  /* Botones aún más compactos en móviles muy pequeños */
+  .prevButton,
+  .nextButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1.5rem;
+  }
+}
+
+/* ============================================
+   OPTIMIZACIONES ANTI-PARPADEO (GPU)
+   ============================================ */
+.emblaSlide img,
+.emblaSlide .bookCover {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  content-visibility: auto;
+}
+
+@media (hover: hover) {
+  .bookCard:hover {
+    isolation: isolate;
+  }
 }
