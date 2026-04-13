@@ -11,7 +11,7 @@ const DownloadButton = ({ book }) => {
                 rel="noopener noreferrer nofollow"
                 className={`${styles.downloadButton} ${book.isPremium ? styles.premiumBtn : ''}`}
             >
-                {book.isPremium ? 'Descargar Premium' : 'Descargar Gratis'} ({book.fileType || 'PDF'})
+                {book.isPremium ? 'Descargar Libro' : 'Descargar Libro'} ({book.fileType || 'PDF'})
             </a>
             {book.isPremium && (
                 <p className={styles.premiumWarning}>* Requiere cuenta de suscriptor activa.</p>

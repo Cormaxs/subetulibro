@@ -4,7 +4,7 @@ import Script from 'next/script';
 import '../styles/global.css';
 
 // Tu ID de seguimiento de Google Analytics
-const GA_TRACKING_ID = 'G-15C4M5XHTZ';
+const GA_TRACKING_ID = 'G-91ZR1GVTG1';
 
 // Tu ID de Google AdSense
 const ADSENSE_PUB_ID = 'ca-pub-5933305559914134';
@@ -25,27 +25,27 @@ export default function MyApp({ Component, pageProps }) {
         ====================================================
         Estrategia "afterInteractive" (o "lazyOnload"): Carga el script después de que la 
         página se vuelve interactiva, minimizando el impacto en el rendimiento inicial (LCP).
-     
+     */}
       <Script
         async 
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}`}
         strategy="afterInteractive" 
         crossOrigin="anonymous"
-      /> */}
+      /> 
       
       {/* ====================================================
         2. SCRIPT PRINCIPAL DE ANALYTICS (Cargador de gtag.js)
         ====================================================
-      
+      */}
       <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
       />
-*/}
+
       {/* ====================================================
         3. SCRIPT DE CONFIGURACIÓN DE ANALYTICS (Inicialización)
         ====================================================
-   
+     */}
       <Script
         id="google-analytics-init"
         strategy="afterInteractive"
@@ -60,7 +60,7 @@ export default function MyApp({ Component, pageProps }) {
           `,
         }}
       />
-   */}
+ 
       {/* Tu estructura de aplicación original */}
       <Component {...pageProps} />
     </>

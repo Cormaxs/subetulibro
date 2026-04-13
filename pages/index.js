@@ -1,33 +1,24 @@
 import Head from 'next/head';
-import { fetchBooks } from '../services/llamados/books';
 import Layout from '../components/layout/Layout';
-import BookGrid from '../components/features/BookGrid';
-import Pagination from '../components/ui/Pagination';
-import Loader from '../components/ui/Loader';
-import { useHome } from '../hooks/useHome';
+import BookCarousel from '../components/features/BookCarousel';
+import useSections from '../hooks/useSections';
 import styles from '../styles/Home.module.css';
 
-export default function Home({ booksData, currentPage, totalPages, error, currentQuery }) {
-    const books = booksData?.books || [];
-    const metadata = booksData?.metadata || { page: currentPage, limit: 12, totalCount: 0, totalPages: totalPages };
-    const { isLoading } = useHome(currentPage, currentQuery);
+const CAROUSEL_SECTIONS = [
+    { key: 'suspenso', display: 'Libros de Stephen King' },
+    { key: 'jkRowling', display: 'Libros de J.K. Rowling' },
+    { key: 'garciaMarquez', display: 'Libros de Gabriel García Márquez' },
+    { key: 'novels', display: 'Categoría: Novelas' },
+];
 
-    if (error) {
-        return (
-            <Layout>
-                <div className={styles.errorContainer}>
-                    <h1>Error de Carga</h1>
-                    <p>{error}</p>
-                </div>
-            </Layout>
-        );
-    }
+export default function Home() {
+    const sections = useSections();
 
     return (
         <Layout>
             <Head>
-                <title>{currentQuery ? `Resultados: ${currentQuery}` : `subetulibro - Pagina  ${currentPage}`}</title>
-                <meta name="description" content={currentQuery ? `Resultados de búsqueda para ${currentQuery}.` : `Explora el catálogo de libros, página ${currentPage}.`} />
+                <title>subetulibro - Libros Destacados</title>
+                <meta name="description" content="Descubre libros destacados por categorías. Explora novelas, libros de terror y obras de J.K. Rowling." />
             </Head>
 
             <main className={styles.mainContent}>
@@ -37,64 +28,20 @@ export default function Home({ booksData, currentPage, totalPages, error, curren
 
                 <div className={styles.pageInfoContainer}>
                     <p className={styles.pageInfo}>
-                        {currentQuery ? 
-                            `${booksData?.metadata?.totalCount || 0} resultados para "${currentQuery}". ` : 
-                            `Explora ${booksData?.metadata?.totalCount || 0} libros disponibles. `} 
-                        Página {currentPage} de {totalPages}.
+                        Descubre libros destacados por categorías y géneros.
                     </p>
                 </div>
-                
-                {isLoading && <Loader />}
-                
-                <BookGrid books={books} isLoading={isLoading} />
 
-                <Pagination 
-                    currentPage={currentPage} 
-                    totalPages={totalPages} 
-                    currentQuery={currentQuery} 
-                    isLoading={isLoading} 
-                />
+                {/* Secciones destacadas */}
+                {CAROUSEL_SECTIONS.map(section => (
+                    <BookCarousel
+                        key={section.key}
+                        books={sections[section.key].books}
+                        title={section.display}
+                        isLoading={sections[section.key].isLoading}
+                    />
+                ))}
             </main>
         </Layout>
     );
-}
-
-// getServerSideProps (Sin cambios, ya est� optimizado)
-export async function getServerSideProps(context) {
-    const page = context.query.page ? parseInt(context.query.page, 10) : 1;
-    const query = context.query.q || '';
-    const limit = context.query.limit ? parseInt(context.query.limit, 10) : 10;
-    const idioma = context.query.idioma || '';
-    const anio = context.query.anio || '';
-    const fileType = context.query.fileType || '';
-
-    let booksData = null;
-    let error = null;
-    let totalPages = 1;
-
-    try {
-        booksData = await fetchBooks({
-            q: query,
-            page,
-            limit,
-            idioma,
-            anio,
-            fileType,
-        });
-        totalPages = booksData?.metadata?.totalPages || 1;
-
-    } catch (e) {
-        console.error("Error al obtener libros:", e.message);
-        error = "No se pudieron cargar los datos del cat�logo. Por favor, int�ntalo de nuevo m�s tarde.";
-    }
-
-    return {
-        props: {
-            booksData: booksData || { books: [], metadata: { page, limit, totalPages: 1, totalCount: 0 } },
-            currentPage: page,
-            totalPages: totalPages,
-            error,
-            currentQuery: query,
-        },
-    };
 }

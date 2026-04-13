@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { getPaginationRange } from '../../utils/pagination';
 import styles from '../../styles/Pagination.module.css';
 
-const Pagination = ({ currentPage, totalPages, currentQuery, isLoading }) => {
+const Pagination = ({ currentPage, totalPages, currentQuery, isLoading, basePath = '/' }) => {
     const paginationRange = getPaginationRange(currentPage, totalPages, 5);
 
     return (
@@ -23,8 +23,8 @@ const Pagination = ({ currentPage, totalPages, currentQuery, isLoading }) => {
                                      (item.type === 'next' && currentPage === totalPages);
 
                 const newHref = currentQuery
-                    ? `/?q=${encodeURIComponent(currentQuery)}&page=${item.number}`
-                    : `/?page=${item.number}`;
+                    ? `${basePath}?q=${encodeURIComponent(currentQuery)}&page=${item.number}`
+                    : `${basePath}?page=${item.number}`;
 
                 if (isDisabled) {
                     return (

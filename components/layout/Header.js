@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Image from 'next/image';
 import SearchHeaderBar from '../features/SearchHeaderBar';
 
 export default function Header() {
+    const router = useRouter();
     const [user, setUser] = useState(null);
     const [isClient, setIsClient] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    // Siempre usar /explore como basePath para búsquedas
+    const basePath = '/explore';
 
     useEffect(() => {
         setIsClient(true);
@@ -36,13 +42,19 @@ export default function Header() {
                 {/* LOGO */}
                 <Link href="/" legacyBehavior>
                     <a className="brand-link">
-                        <img src="/diseño/logo.png" alt="SubeTuLibro" className="brand-logo" />
+                        <Image
+                            src="/diseño/logo.png"
+                            alt="SubeTuLibro"
+                            className="brand-logo"
+                            width={40}
+                            height={40}
+                        />
                         <span className="brand-text">SUBETULIBRO.COM</span>
                     </a>
                 </Link>
 
                 {/* BUSCADOR EN HEADER */}
-                <SearchHeaderBar />
+                <SearchHeaderBar basePath={basePath} />
 
                 {/* BOTÓN HAMBURGUESA (Solo móvil) */}
                 <button 
@@ -61,6 +73,11 @@ export default function Header() {
                         <li>
                             <Link href="/" legacyBehavior>
                                 <a onClick={() => setIsMenuOpen(false)}>Inicio</a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/explore" legacyBehavior>
+                                <a onClick={() => setIsMenuOpen(false)}>Explorar</a>
                             </Link>
                         </li>
 

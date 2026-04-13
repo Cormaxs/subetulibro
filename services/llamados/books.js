@@ -1,6 +1,6 @@
 import { api } from './apiClient';
 
-const buildSearchParams = ({ q, page, limit, idioma, anio, fileType }) => {
+const buildSearchParams = ({ q, page, limit, idioma, anio, fileType, autor, isPremium, categorias }) => {
   const params = new URLSearchParams();
 
   if (q) params.append('q', q);
@@ -9,13 +9,16 @@ const buildSearchParams = ({ q, page, limit, idioma, anio, fileType }) => {
   if (idioma) params.append('idioma', idioma);
   if (anio) params.append('anio', anio);
   if (fileType) params.append('fileType', fileType);
+  if (autor) params.append('autor', autor);
+  if (isPremium !== undefined) params.append('isPremium', isPremium);
+  if (categorias) params.append('categorias', categorias);
 
   return params.toString();
 };
 
-export const fetchBooks = async ({ q = '', page = 1, limit = 12, idioma, anio, fileType } = {}) => {
+export const fetchBooks = async ({ q = '', page = 1, limit = 12, idioma, anio, fileType, autor, isPremium, categorias } = {}) => {
   try {
-    const queryString = buildSearchParams({ q, page, limit, idioma, anio, fileType });
+    const queryString = buildSearchParams({ q, page, limit, idioma, anio, fileType, autor, isPremium, categorias });
     const path = `/books/buscadormejorado?${queryString}`;
     const response = await api.get(path);
   console.log('Respuesta de fetchBooks:', response.data);

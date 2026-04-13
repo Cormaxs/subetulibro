@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import styles from '../../styles/SearchHeaderBar.module.css';
 import { fetchBooks } from '../../services/llamados/books';
 import { createSlug } from '../../utils/slug';
 import { isValidImageUrl } from '../../utils/imageUtils';
 
-const SearchHeaderBar = () => {
+const SearchHeaderBar = ({ basePath = '/' }) => {
     const router = useRouter();
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
@@ -83,7 +84,7 @@ const SearchHeaderBar = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [filters.author, filters.category, filters.fileType, filters.language, filters.isPremium]);
+    }, [filters]);
 
     // Búsqueda en tiempo real - sin debounce para reactividad inmediata
     useEffect(() => {
@@ -122,7 +123,7 @@ const SearchHeaderBar = () => {
         sessionStorage.removeItem('last_catalog_page');
         
         // Construir URL con filtros
-        let url = '/?page=1&limit=12';
+        let url = `${basePath}?page=1&limit=12`;
         if (trimmedQuery) url += `&q=${encodeURIComponent(trimmedQuery)}`;
         if (filters.fileType) url += `&fileType=${encodeURIComponent(filters.fileType)}`;
         if (filters.category) url += `&categorias=${encodeURIComponent(filters.category)}`;
@@ -131,9 +132,9 @@ const SearchHeaderBar = () => {
         if (filters.isPremium) url += `&isPremium=${encodeURIComponent(filters.isPremium)}`;
         
         router.push(url);
-    }, [query, router, filters]);
+    }, [query, router, filters, basePath]);
 
-    const handleViewAllResults = () => {
+    const handleViewAllResults = useCallback(() => {
         const trimmedQuery = query.trim();
         const hasActiveFilters = Object.values(filters).some(v => v !== '');
 
@@ -147,16 +148,16 @@ const SearchHeaderBar = () => {
         sessionStorage.removeItem('last_catalog_page');
         
         // Construir URL con filtros
-        let url = '/?page=1&limit=12';
+        let url = `${basePath}?page=1&limit=12`;
         if (trimmedQuery) url += `&q=${encodeURIComponent(trimmedQuery)}`;
         if (filters.fileType) url += `&fileType=${encodeURIComponent(filters.fileType)}`;
-        if (filters.category) url += `&category=${encodeURIComponent(filters.category)}`;
-        if (filters.author) url += `&author=${encodeURIComponent(filters.author)}`;
-        if (filters.language) url += `&language=${encodeURIComponent(filters.language)}`;
+        if (filters.category) url += `&categorias=${encodeURIComponent(filters.category)}`;
+        if (filters.author) url += `&autor=${encodeURIComponent(filters.author)}`;
+        if (filters.language) url += `&idioma=${encodeURIComponent(filters.language)}`;
         if (filters.isPremium) url += `&isPremium=${encodeURIComponent(filters.isPremium)}`;
         
         router.push(url);
-    };
+    }, [query, router, filters, basePath]);
 
     const handleSuggestionClick = (suggestion) => {
         setQuery('');
@@ -401,12 +402,15 @@ const SearchHeaderBar = () => {
                                         }`}
                                     >
                                         {isValidImageUrl(suggestion.portada) && !imageErrors[suggestion._id] ? (
-                                            <img 
-                                                src={suggestion.portada} 
+                                            <Image
+                                                src={suggestion.portada}
                                                 alt={suggestion.titulo}
                                                 className={styles.bookCover}
-                                                loading="lazy"
+                                                width={60}
+                                                height={80}
                                                 onError={() => handleImageError(suggestion._id)}
+                                                placeholder="blur"
+                                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEB//EACUQAAIBAwMEAwEBAAAAAAAAAAECAwAEEQUSITFBURNhcZEigf/EABUBAFEAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8A4+iiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q=="
                                             />
                                         ) : (
                                             <div className={styles.bookCoverPlaceholder}>

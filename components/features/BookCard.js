@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { createSlug } from '../../utils/slug';
 import { isValidImageUrl } from '../../utils/imageUtils';
@@ -55,14 +56,15 @@ const BookCard = ({ book }) => {
                     )}
                     
                     {isValidImageUrl(decodedPortada) && !imageError ? (
-                        <img
+                        <Image
                             src={decodedPortada}
                             alt={`Portada del libro: ${book.titulo}`}
                             className={styles.bookCover}
-                            loading="lazy"
-                            width="260"
-                            height="350"
+                            width={260}
+                            height={350}
                             onError={handleImageError}
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEB//EACUQAAIBAwMEAwEBAAAAAAAAAAECAwAEEQUSITFBURNhcZEigf/EABUBAFEAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8A4+iiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q=="
                         />
                     ) : (
                         <div className={styles.placeholderCover}>
