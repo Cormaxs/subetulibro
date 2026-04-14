@@ -105,9 +105,12 @@
   font-weight: 600;
   margin: 0;
   color: #ffffff;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  min-height: 2.4rem; /* 2 líneas de 1.2rem cada una */
 }
 
 .cardAuthor {

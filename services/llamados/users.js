@@ -48,7 +48,18 @@ export const updateUserProfile = async (userId, { username, password, email }) =
       return null; 
     }
 
-    const response = await api.post(`/users/update/${userId}`, updateData);
+    // Agregar el token Bearer manualmente
+    const config = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers = {
+          Authorization: `Bearer ${token}`
+        };
+      }
+    }
+
+    const response = await api.post(`/users/update/${userId}`, updateData, config);
     
     console.log('Perfil actualizado con éxito:', response);
     return response.data;

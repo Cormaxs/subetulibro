@@ -44,7 +44,18 @@ export const fetchBookById = async (slugOrId) => {
 
 export const rateBook = async (bookId, userId, rating) => {
   try {
-    const response = await api.post(`/rating/${bookId}/${userId}/${rating}`);
+    // Agregar el token Bearer manualmente
+    const config = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers = {
+          Authorization: `Bearer ${token}`
+        };
+      }
+    }
+
+    const response = await api.post(`/rating/${bookId}/${userId}/${rating}`, {}, config);
     return response.data;
   } catch (error) {
     console.error('Error al puntuar el libro:', error);
@@ -54,7 +65,18 @@ export const rateBook = async (bookId, userId, rating) => {
 
 export const fetchUserRatings = async (userId) => {
   try {
-    const response = await api.get(`/rating/list/${userId}`);
+    // Agregar el token Bearer manualmente
+    const config = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers = {
+          Authorization: `Bearer ${token}`
+        };
+      }
+    }
+
+    const response = await api.get(`/rating/list/${userId}`, config);
     return response.data?.data || [];
   } catch (error) {
     console.error(`Error al obtener las calificaciones del usuario ${userId}:`, error);

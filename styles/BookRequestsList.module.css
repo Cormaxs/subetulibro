@@ -1,0 +1,366 @@
+/* Book Requests List Styles */
+
+.requestsContainer {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #f97316;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error {
+    text-align: center;
+    padding: 40px 20px;
+    background: #fee2e2;
+    border-radius: 8px;
+    color: #dc2626;
+}
+
+.retryButton {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.retryButton:hover {
+    background: #b91c1c;
+}
+
+.empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+.requestsList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.requestCard {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.requestCard:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.requestHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+}
+
+.bookInfo {
+    flex: 1;
+}
+
+.bookTitle {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.bookAuthor {
+    font-size: 1rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.statusBadge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.statusPending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.statusApproved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.statusSearching {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.statusRejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.requestDetails {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detailLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detailValue {
+    font-size: 0.95rem;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.adminNote {
+    background: #f9fafb;
+    border-left: 4px solid #f97316;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+.adminNote strong {
+    color: #1f2937;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.adminNote p {
+    color: #374151;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.adminResponseCard {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+}
+
+.adminResponseTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.adminFormRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.adminLabel {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.adminSelect,
+.adminTextarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    color: #111827;
+    background: white;
+}
+
+.adminTextarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.adminInput {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #111827;
+    background: white;
+}
+
+.adminLink {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.adminLink a {
+    color: #2563eb;
+    word-break: break-all;
+}
+
+.adminError,
+.adminSuccess {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.adminError {
+    color: #b91c1c;
+}
+
+.adminSuccess {
+    color: #047857;
+}
+
+.adminSubmitButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.2s ease;
+}
+
+.adminSubmitButton:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.adminSubmitButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.pageNumbers {
+    display: flex;
+    gap: 8px;
+}
+
+.pageButton {
+    padding: 8px 12px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+    background: #f97316;
+    color: white;
+    border-color: #f97316;
+}
+
+.pageButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.activePage {
+    background: #f97316;
+    color: white;
+    border-color: #f97316;
+}
+
+.summary {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .requestHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .statusBadge {
+        align-self: flex-end;
+    }
+
+    .requestDetails {
+        grid-template-columns: 1fr;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pageNumbers {
+        order: 1;
+    }
+}

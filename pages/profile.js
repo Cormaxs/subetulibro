@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Layout from '../components/layout/Layout';
 import useAuth from '../hooks/useAuth';
 import EditProfileForm from '../components/features/EditProfileForm';
+import BookRequestForm from '../components/features/BookRequestForm';
+import BookRequestsList from '../components/features/BookRequestsList';
 import styles from '../styles/Profile.module.css';
 
 export default function Profile() {
@@ -92,6 +94,16 @@ export default function Profile() {
                                     onCancel={() => setIsEditingProfile(false)}
                                 />
                             )}
+                        </section>
+
+                        {/* Sección de Solicitar Libros */}
+                        <section className={styles.section}>
+                            <BookRequestForm />
+                        </section>
+
+                        {/* Sección de Mis Peticiones */}
+                        <section className={styles.section}>
+                            <BookRequestsList />
                         </section>
                     </div>
                 </div>
