@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Image from 'next/image';
 import { isValidImageUrl } from '../../../utils/imageUtils';
 import styles from '../../../styles/BookDetail.module.css';
 
@@ -29,13 +30,17 @@ const BookCover = ({ book }) => {
             )}
             
             {isValidImageUrl(decodedPortada) && !imageError ? (
-                <img
-                    src={decodedPortada}
-                    alt={`Portada de ${book.titulo}`}
-                    className={styles.bookCoverLarge}
-                    loading="lazy"
-                    onError={handleImageError}
-                />
+                <div className={styles.imageContainer}>
+                    <Image
+                        src={decodedPortada}
+                        alt={`Portada de ${book.titulo}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className={styles.bookCoverLarge}
+                        priority={true}
+                        onError={handleImageError}
+                    />
+                </div>
             ) : (
                 <div className={styles.bookCoverPlaceholder}>
                     <span className={styles.placeholderIcon}>📕</span>

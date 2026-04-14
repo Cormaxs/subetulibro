@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import useAuth from '../../hooks/useAuth';
 import { createSlug } from '../../utils/slug';
 import { isValidImageUrl } from '../../utils/imageUtils';
+import AdminActionButtons from '../admin/AdminActionButtons';
 import styles from '../../styles/BookCard.module.css';
 
 const BookCard = ({ book }) => {
     const [imageError, setImageError] = useState(false);
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
     const slug = createSlug(book.titulo);
     const uniqueSlug = `${slug}-${book._id}`;
 
@@ -52,6 +56,13 @@ const BookCard = ({ book }) => {
                     {book.fileType && (
                         <div className={styles.fileBadge}>
                             {book.fileType.toUpperCase()}
+                        </div>
+                    )}
+
+                    {/* Admin Actions (Solo para admins) */}
+                    {isAdmin && (
+                        <div className={styles.adminActionsOverlay}>
+                            <AdminActionButtons bookId={book._id} showEditDelete={true} size="small" />
                         </div>
                     )}
                     

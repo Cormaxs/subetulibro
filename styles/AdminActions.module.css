@@ -1,0 +1,129 @@
+/* ============================================
+   AdminActions.module.css
+   Estilo elegante para botones de administración
+   Inspirado en interfaces modernas y limpias
+   ============================================ */
+
+.adminActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.adminActions.size_normal {
+  gap: 12px;
+}
+
+.adminActions.size_small {
+  gap: 8px;
+}
+
+/* Botones base */
+.editBtn,
+.deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Iconos internos */
+.iconText {
+  display: inline-block;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+/* Editar */
+.editBtn {
+  background: rgba(44, 125, 160, 0.75);
+  backdrop-filter: blur(8px);
+  border-color: rgba(44, 125, 160, 0.5);
+}
+
+.editBtn:hover {
+  background: rgba(44, 125, 160, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(44, 125, 160, 0.3);
+  border-color: rgba(44, 125, 160, 0.8);
+}
+
+.editBtn:hover .iconText {
+  transform: scale(1.05);
+}
+
+/* Eliminar */
+.deleteBtn {
+  background: rgba(220, 38, 38, 0.75);
+  backdrop-filter: blur(8px);
+  border-color: rgba(220, 38, 38, 0.5);
+}
+
+.deleteBtn:hover {
+  background: rgba(220, 38, 38, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.3);
+  border-color: rgba(220, 38, 38, 0.8);
+}
+
+.deleteBtn:hover .iconText {
+  transform: scale(1.05);
+}
+
+/* Tamaño pequeño (para cards pequeñas) */
+.size_small .editBtn,
+.size_small .deleteBtn {
+  min-width: 30px;
+  height: 30px;
+  border-radius: 10px;
+}
+
+.size_small .iconText {
+  font-size: 0.9rem;
+}
+
+/* Overlay para acciones flotantes sobre cards (carrusel/grid) */
+.overlayActions {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 15;
+}
+
+.cardWithAdmin:hover .overlayActions {
+  opacity: 1;
+}
+
+/* Contenedor relativo para cards con admin */
+.cardWithAdmin {
+  position: relative;
+}
+
+/* Opcional: versión minimalista para modo oscuro extremo */
+@media (prefers-color-scheme: dark) {
+  .editBtn,
+  .deleteBtn {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+  }
+}

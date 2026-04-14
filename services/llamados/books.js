@@ -41,3 +41,23 @@ export const fetchBookById = async (slugOrId) => {
     throw new Error('Error de conexión al obtener el libro.');
   }
 };
+
+export const rateBook = async (bookId, userId, rating) => {
+  try {
+    const response = await api.post(`/rating/${bookId}/${userId}/${rating}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al puntuar el libro:', error);
+    throw error;
+  }
+};
+
+export const fetchUserRatings = async (userId) => {
+  try {
+    const response = await api.get(`/rating/list/${userId}`);
+    return response.data?.data || [];
+  } catch (error) {
+    console.error(`Error al obtener las calificaciones del usuario ${userId}:`, error);
+    throw error;
+  }
+};

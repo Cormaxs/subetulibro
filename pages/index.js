@@ -1,4 +1,5 @@
-import Head from 'next/head';
+import SEO from '../components/seo/SEO';
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 import Layout from '../components/layout/Layout';
 import BookCarousel from '../components/features/BookCarousel';
 import useSections from '../hooks/useSections';
@@ -14,12 +15,22 @@ const CAROUSEL_SECTIONS = [
 export default function Home() {
     const sections = useSections();
 
+    const breadcrumbs = [
+        { name: 'Inicio', url: 'https://subetulibro.com' },
+    ];
+
     return (
         <Layout>
-            <Head>
-                <title>subetulibro - Libros Destacados</title>
-                <meta name="description" content="Descubre libros destacados por categorías. Explora novelas, libros de terror y obras de J.K. Rowling." />
-            </Head>
+            <SEO
+                title="SubeTuLibro - Descubre Libros Destacados | Plataforma de Lectura Digital"
+                description="Explora libros destacados por categorías, géneros literarios y autores famosos. Acceso a novelas, suspenso, fantasía y más. ¡Lee gratis o con planes premium!"
+                canonical="https://subetulibro.com"
+                ogImage="https://subetulibro.com/og-home.png"
+                ogType="website"
+                keywords="libros digitales, lectura online, novelas, ebooks, literatura, suspenso, fantasía, autores"
+            >
+                <BreadcrumbSchema items={breadcrumbs} />
+            </SEO>
 
             <main className={styles.mainContent}>
                 <h1 className={styles.header}>

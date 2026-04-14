@@ -1,17 +1,56 @@
 // BookInfo.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import useAuth from '../../../hooks/useAuth';
+import { fetchUserRatings } from '../../../services/llamados/books';
+import AdminActionButtons from '../../admin/AdminActionButtons';
+import Rating from './Rating';
 import styles from '../../../styles/BookDetail.module.css';
 
 const BookInfo = ({ book }) => {
+  const { user, isAuthenticated } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [userBookRating, setUserBookRating] = useState(null);
+  const [ratingsLoading, setRatingsLoading] = useState(false);
+  const [ratingsError, setRatingsError] = useState(null);
+
   const SYNOPSIS_LIMIT = 300; // caracteres
   const synopsis = book.sinopsis || '';
   const isLong = synopsis.length > SYNOPSIS_LIMIT;
   const displaySynopsis = isExpanded ? synopsis : synopsis.slice(0, SYNOPSIS_LIMIT) + (isLong ? '...' : '');
 
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) return;
+
+    const loadUserRatings = async () => {
+      setRatingsLoading(true);
+      setRatingsError(null);
+
+      try {
+        const ratings = await fetchUserRatings(user.id);
+        const existingRating = ratings.find((item) => item.book?._id === book._id);
+        if (existingRating) {
+          setUserBookRating(existingRating.rating);
+        }
+      } catch (error) {
+        setRatingsError('No se pudieron cargar tus calificaciones.');
+      } finally {
+        setRatingsLoading(false);
+      }
+    };
+
+    loadUserRatings();
+  }, [isAuthenticated, user?.id, book._id]);
+
   return (
     <div className={styles.detailContent}>
-      <h1 className={styles.bookTitle}>{book.titulo}</h1>
+      <div className={styles.titleWithAdmin}>
+        <h1 className={styles.bookTitle}>{book.titulo}</h1>
+        {user?.role === 'admin' && (
+          <div className={styles.adminActionsDetail}>
+            <AdminActionButtons bookId={book._id} showEditDelete={true} size="normal" />
+          </div>
+        )}
+      </div>
 
       <div className={styles.metaRow}>
         <p className={styles.bookAuthor}>
@@ -32,6 +71,27 @@ const BookInfo = ({ book }) => {
           <small className={styles.ratingCount}> ({book.totalRatingsCount || 0} votos)</small>
         </p>
       </div>
+
+      {isAuthenticated && user && (
+        <>
+              <Rating
+            bookId={book._id}
+            userId={user.id}
+            initialRating={userBookRating || 0}
+            alreadyRated={Boolean(userBookRating)}
+            onRated={(value) => setUserBookRating(value)}
+          />
+
+          {ratingsLoading && <p>Cargando tus calificaciones...</p>}
+          {ratingsError && <p className={styles.error}>{ratingsError}</p>}
+
+          {userBookRating && (
+            <p className={styles.userRatingInfo}>
+              Ya puntuaste este libro: <strong>{userBookRating}</strong> estrellas.
+            </p>
+          )}
+        </>
+      )}
 
       {book.categorias && book.categorias.length > 0 && (
         <div className={styles.tagsWrapper}>

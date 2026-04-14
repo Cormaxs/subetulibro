@@ -5,33 +5,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'drive.google.com',
+        hostname: '**',
         port: '',
-        pathname: '/thumbnail**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'books.google.com',
-        port: '',
-        pathname: '/books/content**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cfluna.com',
-        port: '',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.gstatic.com',
-        port: '',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'assets.lectulandia.co',
-        port: '',
-        pathname: '**',
+        pathname: '/**',
       },
     ],
   },

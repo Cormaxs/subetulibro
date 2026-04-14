@@ -1,4 +1,5 @@
-import Head from 'next/head';
+import SEO from '../components/seo/SEO';
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 import { fetchBooks } from '../services/llamados/books';
 import Layout from '../components/layout/Layout';
 import BookGrid from '../components/features/BookGrid';
@@ -11,6 +12,16 @@ export default function Explore({ booksData, currentPage, totalPages, error, cur
     const books = booksData?.books || [];
     const metadata = booksData?.metadata || { page: currentPage, limit: 12, totalCount: 0, totalPages: totalPages };
     const { isLoading } = useHome(currentPage, currentQuery);
+
+    const pageTitle = currentQuery ? `Buscar: ${currentQuery}` : `Explorar Libros - Página ${currentPage}`;
+    const pageDescription = currentQuery
+        ? `Resultados de búsqueda para "${currentQuery}". Encuentra libros, autores y géneros.`
+        : `Explora nuestro catálogo completo de libros digitales. Página ${currentPage} de ${totalPages}.`;
+
+    const breadcrumbs = [
+        { name: 'Inicio', url: 'https://subetulibro.com' },
+        { name: 'Explorar', url: 'https://subetulibro.com/explore' },
+    ];
 
     if (error) {
         return (
@@ -25,10 +36,14 @@ export default function Explore({ booksData, currentPage, totalPages, error, cur
 
     return (
         <Layout>
-            <Head>
-                <title>{currentQuery ? `Resultados: ${currentQuery}` : `Explorar Libros - Pagina ${currentPage}`}</title>
-                <meta name="description" content={currentQuery ? `Resultados de búsqueda para ${currentQuery}.` : `Explora el catálogo completo de libros, página ${currentPage}.`} />
-            </Head>
+            <SEO
+                title={pageTitle}
+                description={pageDescription}
+                canonical={`https://subetulibro.com/explore${currentQuery ? `?q=${encodeURIComponent(currentQuery)}` : `?page=${currentPage}`}`}
+                keywords={`libros, búsqueda, explorar, ${currentQuery || 'catálogo'}`}
+            >
+                <BreadcrumbSchema items={breadcrumbs} />
+            </SEO>
 
             <main className={styles.mainContent}>
                 <h1 className={styles.header}>

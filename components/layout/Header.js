@@ -3,10 +3,11 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import SearchHeaderBar from '../features/SearchHeaderBar';
+import useAuth from '../../hooks/useAuth';
 
 export default function Header() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    const { user: authUser, isAuthenticated } = useAuth();
     const [isClient, setIsClient] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -15,22 +16,10 @@ export default function Header() {
 
     useEffect(() => {
         setIsClient(true);
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-
-        if (token && userData) {
-            try {
-                setUser(JSON.parse(userData));
-            } catch (error) {
-                console.error('Error parsing user data:', error);
-                localStorage.clear();
-            }
-        }
     }, []);
 
     const handleLogout = () => {
         localStorage.clear();
-        setUser(null);
         window.location.href = '/';
     };
 
@@ -81,13 +70,22 @@ export default function Header() {
                             </Link>
                         </li>
 
-                        {isClient && user ? (
+                        {isClient && isAuthenticated && authUser ? (
                             <>
+                                {authUser.role === 'admin' && (
+                                    <li>
+                                        <Link href="/admin/books/create" legacyBehavior>
+                                            <a className="admin-create-btn" onClick={() => setIsMenuOpen(false)} title="Crear nuevo libro">
+                                                ➕
+                                            </a>
+                                        </Link>
+                                    </li>
+                                )}
                                 <li>
                                     <Link href="/profile" legacyBehavior>
                                         <a className="user-profile-link" onClick={() => setIsMenuOpen(false)}>
                                             <div className="avatar-circle">
-                                                {user.username?.charAt(0).toUpperCase() || 'U'}
+                                                {authUser.username?.charAt(0).toUpperCase() || 'U'}
                                             </div>
                                             <span>Mi Perfil</span>
                                         </a>
@@ -101,15 +99,11 @@ export default function Header() {
                             </>
                         ) : (
                             <>
+                                
                                 <li>
                                     <Link href="/auth/login" legacyBehavior>
-                                        <a onClick={() => setIsMenuOpen(false)}>Iniciar sesión</a>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/auth/register" legacyBehavior>
                                         <a className="primary-action" onClick={() => setIsMenuOpen(false)}>
-                                            Crear cuenta
+                                            Iniciar sesion
                                         </a>
                                     </Link>
                                 </li>
@@ -195,6 +189,26 @@ export default function Header() {
                 .primary-action:hover {
                     background: #ea580c;
                     transform: translateY(-2px);
+                }
+
+                .admin-create-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                    color: white;
+                    border-radius: 12px;
+                    font-size: 1.2rem;
+                    transition: transform 0.2s, box-shadow 0.2s, background 0.2s !important;
+                    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+                }
+
+                .admin-create-btn:hover {
+                    transform: scale(1.1);
+                    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+                    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
                 }
 
                 /* AVATAR & LOGOUT */

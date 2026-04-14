@@ -2,10 +2,12 @@
 
 import Header from './Header';
 import Footer from './Footer';
+import OrganizationSchema from '../seo/OrganizationSchema';
 
 export default function Layout({ children }) {
     return (
         <div className="page-shell">
+            <OrganizationSchema />
             <Header />
             <main className="page-main">{children}</main>
             <Footer />

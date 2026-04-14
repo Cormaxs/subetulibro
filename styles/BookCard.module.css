@@ -173,3 +173,23 @@
     font-size: 0.65rem;
   }
 }
+
+/* Admin Actions Overlay */
+.adminActionsOverlay {
+  position: absolute;
+  top: 8px;
+  right: 40px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.2, 0, 0, 1);
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.bookCard:hover .adminActionsOverlay {
+  opacity: 1;
+}
