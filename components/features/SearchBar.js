@@ -1,7 +1,7 @@
 // components/features/SearchBar.js
 
 import { useRouter } from 'next/router';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useTransition } from 'react';
 import styles from '../../styles/SearchBar.module.css';
 
 // ⭐️ CONSTANTE CLAVE para Session Storage
@@ -9,6 +9,7 @@ const PAGE_STORAGE_KEY = 'last_catalog_page';
 
 const SearchBar = ({ initialQuery }) => {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
     const [query, setQuery] = useState(initialQuery);
 
     useEffect(() => {
@@ -32,7 +33,9 @@ const SearchBar = ({ initialQuery }) => {
         if (fileType) params.append('fileType', String(fileType));
 
         sessionStorage.removeItem(PAGE_STORAGE_KEY);
-        router.push(`/?${params.toString()}`);
+        startTransition(() => {
+            router.push(`/?${params.toString()}`);
+        });
     }, [query, router, initialQuery]);
 
     const handleClearSearch = useCallback(() => {
@@ -48,7 +51,9 @@ const SearchBar = ({ initialQuery }) => {
         if (fileType) params.append('fileType', String(fileType));
 
         const basePath = params.toString() ? `/?${params.toString()}` : '/?page=1';
-        router.push(basePath);
+        startTransition(() => {
+            router.push(basePath);
+        });
     }, [router]);
 
     return (

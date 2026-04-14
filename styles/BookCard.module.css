@@ -43,6 +43,24 @@
   filter: brightness(0.95);
 }
 
+.imageSkeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(135deg, #1c1c1c 0%, #141414 30%, #1c1c1c 60%, #0f0f0f 100%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .bookCard:hover .bookCover {
   transform: scale(1.02);
   filter: brightness(1.05);

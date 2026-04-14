@@ -1,5 +1,6 @@
 // pages/_app.js
 import Script from 'next/script';
+import NextTopLoader from 'nextjs-toploader';
 import '../styles/global.css';
 
 // ID de seguimiento de Google Analytics
@@ -11,6 +12,7 @@ const ADSENSE_PUB_ID = 'ca-pub-5933305559914134';
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
+      <NextTopLoader color="#0070f3" showSpinner={false} shadow={false} />
       {/* 1. SCRIPT DE GOOGLE ADSENSE */}
       <Script
         id="adsbygoogle-init"

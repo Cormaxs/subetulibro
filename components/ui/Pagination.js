@@ -43,7 +43,7 @@ const Pagination = ({ currentPage, totalPages, currentQuery, isLoading, basePath
                         key={key}
                         href={newHref}
                         legacyBehavior
-                        prefetch={!isCurrent && item.type === 'page'}
+                        prefetch={!isCurrent}
                     >
                         <a
                             onClick={(e) => isLoading ? e.preventDefault() : null}

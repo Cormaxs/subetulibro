@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
+import { useTransition } from 'react';
 import styles from '../../../styles/BookDetail.module.css';
 
 const BackLink = () => {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
 
     const handleBack = (e) => {
         e.preventDefault();
@@ -10,7 +12,9 @@ const BackLink = () => {
         if (window.history.length > 1) {
             router.back();
         } else {
-            router.push('/explore'); // Fallback por si entró por un link directo
+            startTransition(() => {
+                router.push('/explore'); // Fallback por si entró por un link directo
+            });
         }
     };
 

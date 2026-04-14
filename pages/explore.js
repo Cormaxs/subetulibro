@@ -2,17 +2,10 @@ import SEO from '../components/seo/SEO';
 import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 import { fetchBooks } from '../services/llamados/books';
 import Layout from '../components/layout/Layout';
-import BookGrid from '../components/features/BookGrid';
-import Pagination from '../components/ui/Pagination';
-import Loader from '../components/ui/Loader';
-import { useHome } from '../hooks/useHome';
+import ExploreClient from '../components/features/ExploreClient';
 import styles from '../styles/Home.module.css';
 
 export default function Explore({ booksData, currentPage, totalPages, error, currentQuery }) {
-    const books = booksData?.books || [];
-    const metadata = booksData?.metadata || { page: currentPage, limit: 12, totalCount: 0, totalPages: totalPages };
-    const { isLoading } = useHome(currentPage, currentQuery);
-
     const pageTitle = currentQuery ? `Buscar: ${currentQuery}` : `Explorar Libros - Página ${currentPage}`;
     const pageDescription = currentQuery
         ? `Resultados de búsqueda para "${currentQuery}". Encuentra libros, autores y géneros.`
@@ -59,16 +52,12 @@ export default function Explore({ booksData, currentPage, totalPages, error, cur
                     </p>
                 </div>
 
-                {isLoading && <Loader />}
-
-                <BookGrid books={books} isLoading={isLoading} />
-
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    currentQuery={currentQuery}
-                    isLoading={isLoading}
-                    basePath="/explore"
+                <ExploreClient
+                    initialBooks={booksData?.books || []}
+                    initialMetadata={booksData?.metadata || { page: currentPage, limit: 12, totalCount: 0, totalPages }}
+                    initialPage={currentPage}
+                    initialQuery={currentQuery}
+                    initialTotalPages={totalPages}
                 />
             </main>
         </Layout>

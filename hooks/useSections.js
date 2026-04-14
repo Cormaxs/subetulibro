@@ -10,9 +10,15 @@ const SECTION_CONFIG = [
     { key: 'garciaMarquez', params: { autor: 'Gabriel García' } },
 ];
 
+const sectionCache = {};
+
 const useSections = () => {
     const initialState = SECTION_CONFIG.reduce((acc, section) => {
-        acc[section.key] = { books: [], isLoading: true, error: null };
+        acc[section.key] = {
+            books: sectionCache[section.key]?.books || [],
+            isLoading: sectionCache[section.key] ? false : true,
+            error: sectionCache[section.key]?.error || null,
+        };
         return acc;
     }, {});
 
@@ -22,24 +28,36 @@ const useSections = () => {
         const loadSections = async () => {
             await Promise.allSettled(
                 SECTION_CONFIG.map(async (section) => {
+                    if (sectionCache[section.key]) {
+                        setSections(prev => ({
+                            ...prev,
+                            [section.key]: sectionCache[section.key]
+                        }));
+                        return;
+                    }
+
                     try {
                         const data = await fetchBooks({ ...section.params, limit: 20 });
+                        const value = {
+                            books: data.books || [],
+                            isLoading: false,
+                            error: null
+                        };
+                        sectionCache[section.key] = value;
                         setSections(prev => ({
                             ...prev,
-                            [section.key]: {
-                                books: data.books || [],
-                                isLoading: false,
-                                error: null
-                            }
+                            [section.key]: value
                         }));
                     } catch (error) {
+                        const value = {
+                            books: [],
+                            isLoading: false,
+                            error: error.message
+                        };
+                        sectionCache[section.key] = value;
                         setSections(prev => ({
                             ...prev,
-                            [section.key]: {
-                                books: [],
-                                isLoading: false,
-                                error: error.message
-                            }
+                            [section.key]: value
                         }));
                     }
                 })

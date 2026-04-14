@@ -7,11 +7,12 @@ const BookSEO = ({
   author,
   bookImage,
   bookUrl,
+  canonical,
   bookISBN,
   publishDate,
   publisher,
 }) => {
-  const canonical = bookUrl || 'https://subetulibro.com';
+  const canonicalUrl = bookUrl || canonical || 'https://subetulibro.com';
 
   // Schema JSON-LD para Libro
   const bookSchema = {
@@ -24,7 +25,7 @@ const BookSEO = ({
       name: author,
     },
     image: bookImage,
-    url: canonical,
+    url: canonicalUrl,
     isbn: bookISBN,
     datePublished: publishDate,
     publisher: {
@@ -38,7 +39,7 @@ const BookSEO = ({
       <SEO
         title={title}
         description={description}
-        canonical={canonical}
+        canonical={canonicalUrl}
         ogImage={bookImage}
         ogType="book"
         keywords={`${title}, ${author}, libros, lectura, ${title} libro`}

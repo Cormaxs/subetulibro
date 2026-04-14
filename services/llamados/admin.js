@@ -22,7 +22,7 @@ export const fetchAllBooks = async (page = 1, limit = 20) => {
 
 export const updateBook = async (bookId, bookData) => {
   try {
-    const response = await api.put(`/books/${bookId}`, bookData);
+    const response = await api.post(`/books/${bookId}`, bookData);
     return response.data;
   } catch (error) {
     console.error('Error al actualizar libro:', error);

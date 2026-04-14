@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useTransition } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from '../../styles/SearchHeaderBar.module.css';
@@ -8,6 +8,7 @@ import { isValidImageUrl } from '../../utils/imageUtils';
 
 const SearchHeaderBar = ({ basePath = '/' }) => {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
@@ -118,7 +119,7 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         if (currentFilters.isPremium) url += `&isPremium=${encodeURIComponent(currentFilters.isPremium)}`;
         
         return url;
-    }, [basePath]);
+    }, [basePath, filters, query]);
 
     const handleSearch = useCallback((e, searchQuery = query) => {
         e?.preventDefault();
@@ -129,7 +130,9 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         setSuggestions([]);
         setQuery('');
         sessionStorage.removeItem('last_catalog_page');
-        router.push(url);
+        startTransition(() => {
+            router.push(url);
+        });
     }, [query, filters, buildSearchUrl, router]);
 
     const handleViewAllResults = useCallback(() => {
@@ -140,14 +143,18 @@ const SearchHeaderBar = ({ basePath = '/' }) => {
         setSuggestions([]);
         setQuery('');
         sessionStorage.removeItem('last_catalog_page');
-        router.push(url);
+        startTransition(() => {
+            router.push(url);
+        });
     }, [query, filters, buildSearchUrl, router]);
 
     const handleSuggestionClick = (suggestion) => {
         setQuery('');
         setIsOpen(false);
         setSuggestions([]);
-        router.push(`/seeBook/${suggestion.slug}`);
+        startTransition(() => {
+            router.push(`/seeBook/${suggestion.slug}`);
+        });
     };
 
     const handleKeyDown = (e) => {

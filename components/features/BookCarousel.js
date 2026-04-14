@@ -79,9 +79,9 @@ const BookCarousel = ({ books, title, isLoading }) => {
 
         <div className={styles.emblaViewport} ref={emblaRef}>
           <div className={styles.emblaContainer}>
-            {books.map((book) => (
+            {books.map((book, index) => (
               <div key={book._id} className={styles.emblaSlide}>
-                <BookCard book={book} />
+                <BookCard book={book} priority={index < 3} />
               </div>
             ))}
           </div>
