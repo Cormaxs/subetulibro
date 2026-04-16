@@ -4,10 +4,10 @@ import NextTopLoader from 'nextjs-toploader';
 import '../styles/global.css';
 
 // ID de seguimiento de Google Analytics
-const GA_TRACKING_ID = 'G-91ZR1GVTG1';
+const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID || 'G-91ZR1GVTG1';
 
 // ID de Google AdSense
-const ADSENSE_PUB_ID = 'ca-pub-5933305559914134';
+const ADSENSE_PUB_ID = process.env.NEXT_PUBLIC_ADSENSE_PUB_ID || 'ca-pub-5933305559914134';
 
 export default function MyApp({ Component, pageProps }) {
   return (

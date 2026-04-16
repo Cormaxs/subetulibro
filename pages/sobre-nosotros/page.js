@@ -1,14 +1,17 @@
 // pages/about.js
 
-import Head from 'next/head';
+import SEO from '../../components/seo/SEO';
+
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
 
 export default function About() {
   return (
     <>
-      <Head>
-        <title>Acerca de Nosotros - Biblioteca Digital</title>
-        <meta name="description" content="Nuestra historia: la pasión por los libros y la creación de la Biblioteca Digital." />
-      </Head>
+      <SEO
+        title="Acerca de Nosotros - Biblioteca Digital"
+        description="Nuestra historia: la pasión por los libros y la creación de la Biblioteca Digital."
+        canonical={`${BASE_DOMAIN}/sobre-nosotros`}
+      />
 
       <div className="about-container">
         <h1 className="title">Nuestra Historia y Misión</h1>

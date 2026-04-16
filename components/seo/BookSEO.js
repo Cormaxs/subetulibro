@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import SEO from './SEO';
 
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
+
 const BookSEO = ({
   title,
   description,
@@ -11,8 +13,10 @@ const BookSEO = ({
   bookISBN,
   publishDate,
   publisher,
+  averageRating,
+  reviewCount,
 }) => {
-  const canonicalUrl = bookUrl || canonical || 'https://subetulibro.com';
+  const canonicalUrl = bookUrl || canonical || BASE_DOMAIN;
 
   // Schema JSON-LD para Libro
   const bookSchema = {
@@ -32,6 +36,15 @@ const BookSEO = ({
       '@type': 'Organization',
       name: publisher || 'SubeTuLibro',
     },
+    ...(averageRating && reviewCount && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: averageRating,
+        bestRating: 5,
+        worstRating: 1,
+        ratingCount: reviewCount,
+      },
+    }),
   };
 
   return (

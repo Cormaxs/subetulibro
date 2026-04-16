@@ -10,7 +10,7 @@ import BookInfo from '../../components/features/book-detail/BookInfo';
 import DownloadButton from '../../components/features/book-detail/DownloadButton';
 import styles from '../../styles/BookDetail.module.css';
 
-const BASE_DOMAIN = 'https://subetulibro.com';
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
 
 const fetcher = async (url) => {
   const response = await fetch(url);
@@ -63,12 +63,14 @@ export default function SeeBookPage({ initialBook, bookId }) {
     <Layout>
       {/* Esto se renderiza en el SERVIDOR. El bot de WhatsApp ahora SÍ ve la imagen */}
       <BookSEO
-        title={`${currentBook.titulo} | ${currentBook.autor} | SubeTuLibro`}
+        title={`${book?.titulo ?? 'Cargando...'} | ${book?.autor ?? ''} | SubeTuLibro`}
         description={currentBook.sinopsis?.substring(0, 160)}
         bookUrl={canonicalUrl}
         bookImage={decodedPortada}
         ogType="book"
         author={currentBook.autor}
+        averageRating={currentBook.averageRating}
+        reviewCount={currentBook.reviewCount || 0}
       >
         <BreadcrumbSchema items={breadcrumbItems} />
       </BookSEO>

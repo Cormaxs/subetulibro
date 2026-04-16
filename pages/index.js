@@ -12,11 +12,13 @@ const CAROUSEL_SECTIONS = [
     { key: 'novels', display: 'Categoría: Novelas' },
 ];
 
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
+
 export default function Home() {
     const sections = useSections();
 
     const breadcrumbs = [
-        { name: 'Inicio', url: 'https://subetulibro.com' },
+        { name: 'Inicio', url: BASE_DOMAIN },
     ];
 
     return (
@@ -24,8 +26,8 @@ export default function Home() {
             <SEO
                 title="SubeTuLibro - Descubre Libros Destacados | Plataforma de Lectura Digital"
                 description="Explora libros destacados por categorías, géneros literarios y autores famosos. Acceso a novelas, suspenso, fantasía y más. ¡Lee gratis o con planes premium!"
-                canonical="https://subetulibro.com"
-                ogImage="https://subetulibro.com/og-home.png"
+                canonical={BASE_DOMAIN}
+                ogImage={`${BASE_DOMAIN}/og-home.png`}
                 ogType="website"
                 keywords="libros digitales, lectura online, novelas, ebooks, literatura, suspenso, fantasía, autores"
             >

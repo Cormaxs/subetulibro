@@ -9,7 +9,7 @@ function Sitemap() {
 }
 
 export const getServerSideProps = async ({ res }) => {
-  const baseUrl = 'https://subetulibro.com';
+  const baseUrl = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
 
   // URLs estáticas
   const staticUrls = [
@@ -35,16 +35,9 @@ export const getServerSideProps = async ({ res }) => {
     },
   ];
 
-  // URLs dinámicas de libros (idealmente obtenidas de la base de datos)
-  // Por ahora generaremos un template
-  const dynamicUrls = [
-    // Aquí irían los libros obtenidos de la API
-    // {
-    //   url: `${baseUrl}/seeBook/libro-1`,
-    //   changefreq: 'weekly',
-    //   priority: 0.7,
-    // },
-  ];
+  // URLs dinámicas de libros (comentado para evitar errores en build)
+  // Para producción, descomenta y ajusta la API
+  const dynamicUrls = [];
 
   const allUrls = [...staticUrls, ...dynamicUrls];
 

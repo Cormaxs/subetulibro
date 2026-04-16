@@ -5,6 +5,8 @@ import Layout from '../components/layout/Layout';
 import ExploreClient from '../components/features/ExploreClient';
 import styles from '../styles/Home.module.css';
 
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
+
 export default function Explore({ booksData, currentPage, totalPages, error, currentQuery }) {
     const pageTitle = currentQuery ? `Buscar: ${currentQuery}` : `Explorar Libros - Página ${currentPage}`;
     const pageDescription = currentQuery
@@ -12,8 +14,8 @@ export default function Explore({ booksData, currentPage, totalPages, error, cur
         : `Explora nuestro catálogo completo de libros digitales. Página ${currentPage} de ${totalPages}.`;
 
     const breadcrumbs = [
-        { name: 'Inicio', url: 'https://subetulibro.com' },
-        { name: 'Explorar', url: 'https://subetulibro.com/explore' },
+        { name: 'Inicio', url: BASE_DOMAIN },
+        { name: 'Explorar', url: `${BASE_DOMAIN}/explore` },
     ];
 
     if (error) {
@@ -32,7 +34,7 @@ export default function Explore({ booksData, currentPage, totalPages, error, cur
             <SEO
                 title={pageTitle}
                 description={pageDescription}
-                canonical={`https://subetulibro.com/explore${currentQuery ? `?q=${encodeURIComponent(currentQuery)}` : `?page=${currentPage}`}`}
+                canonical={`${BASE_DOMAIN}/explore${currentQuery ? `?q=${encodeURIComponent(currentQuery)}` : `?page=${currentPage}`}`}
                 keywords={`libros, búsqueda, explorar, ${currentQuery || 'catálogo'}`}
             >
                 <BreadcrumbSchema items={breadcrumbs} />

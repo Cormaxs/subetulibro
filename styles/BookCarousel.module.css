@@ -1,350 +1,166 @@
 /* ============================================
-   BookCarousel.module.css
-   Estilo inspirado en Disney+ / HBO Max
-   Con botones visibles en todos los dispositivos
+   BookCarousel.module.css - ADAPTIVE VERSION
    ============================================ */
 
-/* Contenedor principal del carrusel */
 .carouselContainer {
-  margin: 2rem 0;
-  padding: 1rem 0;
+  margin: 1.5rem 0;
+  padding: 0.5rem 0;
   background: transparent;
   position: relative;
+  overflow: hidden; /* Evita scroll horizontal indeseado en el body */
 }
 
-/* Título de la sección */
 .title {
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin-bottom: 1.25rem;
-  color: #ffffff;
-  padding: 0 4%;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--color-text-primary);
+  padding: 0 5%;
   letter-spacing: -0.2px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* ============================================
-   ESTRUCTURA EMBLA (Carrusel táctil)
+   ESTRUCTURA EMBLA (Mobile & Desktop)
    ============================================ */
 .carousel {
   position: relative;
-  padding: 0 4%;
+  /* El padding lateral permite que las cards no peguen al borde */
+  padding: 0 5%; 
 }
 
-/* Viewport: oculta el desborde y crea capa GPU */
 .emblaViewport {
-  overflow: hidden;
+  overflow: visible; /* Permite el efecto de escala en hover */
   width: 100%;
-  transform: translateZ(0);
-  will-change: scroll-position;
 }
 
-/* Contenedor flexible de los slides */
 .emblaContainer {
   display: flex;
   backface-visibility: hidden;
   touch-action: pan-y pinch-zoom;
-  margin-left: -12px;
+  /* Espaciado entre tarjetas */
+  margin-left: -12px; 
 }
 
-/* Cada slide: tamaño fijo y proporción 2:3 (estilo póster) */
 .emblaSlide {
   flex: 0 0 auto;
   min-width: 0;
   padding-left: 12px;
-  width: 200px;                /* Ancho base en desktop */
-  aspect-ratio: 2 / 3;        /* Altura automática consistente */
+  /* --- ADAPTACIÓN CLAVE --- */
+  width: 140px; /* Tamaño por defecto para celulares */
+  aspect-ratio: 2 / 3.5;
   transform: translateZ(0);
-  will-change: transform;
-  contain: layout style paint;
-}
-
-/* El contenido interno (BookCard) ocupa todo el slide */
-.emblaSlide > * {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;         /* Esquinas "puntiagudas" pero modernas */
-  overflow: hidden;
 }
 
 /* ============================================
-   BOTONES DE NAVEGACIÓN (siempre visibles)
-   ============================================ */
-.prevButton,
-.nextButton {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  font-weight: 300;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.prevButton:hover,
-.nextButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: translateY(-50%) scale(1.05);
-}
-
-.prevButton:active,
-.nextButton:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.prevButton {
-  left: 1%;
-}
-
-.nextButton {
-  right: 1%;
-}
-
-/* ============================================
-   BARRA DE PROGRESO (estilo Disney+)
-   ============================================ */
-.scrollProgress {
-  position: relative;
-  height: 4px;
-  width: 120px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 24px auto 0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.scrollProgressBar {
-  position: absolute;
-  background: #ffffff;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  will-change: transform;
-  /* Sin transition para movimiento directo desde JS */
-}
-
-/* ============================================
-   TARJETAS (BookCard) - Estilo premium
+   TARJETAS (Diseño Adaptativo)
    ============================================ */
 .bookCard {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #0f0f0f;
-  border-radius: 6px;
-  overflow: hidden;
-  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-}
-
-.bookCard:hover {
-  transform: scale(1.05);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
-  z-index: 10;
-}
-
-.bookCoverWrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  overflow: hidden;
-  background: #1a1a1a;
-}
-
-.bookCover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.bookCard:hover .bookCover {
-  transform: scale(1.02);
-}
-
-.placeholderCover {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  color: #aaa;
-  font-size: 0.9rem;
-}
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-card);
+  border-radius: 8px;
+  overflow: hidden;
+  text-decoration: none;
 
-.placeholderIcon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-}
-
-.premiumBadge,
-.fileBadge {
-  position: absolute;
-  top: 8px;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: bold;  color: #ffd966;
-  z-index: 2;
-}
-
-.premiumBadge {
-  left: 8px;
-}
-
-.fileBadge {
-  right: 8px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #00e5ff;
+  color: inherit;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .cardContent {
-  padding: 12px 10px;
-  background: #0f0f0f;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
 }
 
 .cardTitle {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin: 0 0 4px 0;
-  color: #ffffff;
-  white-space: nowrap;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  min-height: 2rem;
 }
 
 .cardAuthor {
   font-size: 0.75rem;
-  color: #b0b0b0;
-  margin: 0 0 8px 0;
+  color: #a0a0a0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.ratingSection {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+/* ============================================
+   MEDIA QUERIES (Escalabilidad)
+   ============================================ */
+
+/* Tablets */
+@media (min-width: 768px) {
+  .title { font-size: 1.5rem; }
+  .emblaSlide { width: 180px; }
+  .cardTitle { font-size: 0.9rem; }
+  
+  .bookCard:hover {
+    transform: scale(1.05);
+    z-index: 10;
+  }
 }
 
-.starsContainer {
-  display: flex;
-  gap: 2px;
-}
-
-.starFilled {
-  color: #ffc107;
-  font-size: 0.75rem;
-}
-
-.starEmpty {
-  color: #555;
-  font-size: 0.75rem;
-}
-
-.ratingCount {
-  font-size: 0.7rem;
-  color: #888;
+/* Desktop */
+@media (min-width: 1024px) {
+  .emblaSlide { width: 210px; }
+  .carousel { padding: 0 4%; }
+  .title { padding: 0 4%; }
 }
 
 /* ============================================
-   RESPONSIVE (botones visibles y adaptados)
+   NAVEGACIÓN (Botones inteligentes)
    ============================================ */
-@media (max-width: 768px) {
-  .title {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
+.prevButton,
+.nextButton {
+  display: none; /* Ocultos en celular (se usa el dedo) */
+}
 
-  .emblaSlide {
-    width: 150px;
-  }
-
-  /* Botones más pequeños pero siempre visibles */
+@media (min-width: 1024px) {
   .prevButton,
   .nextButton {
+    display: flex; /* Solo visibles en Desktop */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     width: 40px;
     height: 40px;
-    font-size: 1.8rem;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    position: absolute;
+    top: 40%;
+    z-index: 20;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
   }
-
-  .prevButton {
-    left: 0.5%;
-  }
-
-  .nextButton {
-    right: 0.5%;
-  }
-
-  .cardTitle {
-    font-size: 0.8rem;
-  }
-
-  .cardAuthor {
-    font-size: 0.7rem;
-  }
+  
+  .prevButton { left: 1%; }
+  .nextButton { right: 1%; }
+  .prevButton:hover, .nextButton:hover { background: var(--color-accent); }
 }
 
-@media (max-width: 480px) {
-  .emblaSlide {
-    width: 130px;
-  }
-
-  .scrollProgress {
-    width: 80px;
-    height: 3px;
-  }
-
-  .cardContent {
-    padding: 8px 6px;
-  }
-
-  /* Botones aún más compactos en móviles muy pequeños */
-  .prevButton,
-  .nextButton {
-    width: 36px;
-    height: 36px;
-    font-size: 1.5rem;
-  }
+/* Progreso (Visible siempre para dar feedback) */
+.scrollProgress {
+  height: 2px;
+  width: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 1rem auto;
+  border-radius: 2px;
 }
 
-/* ============================================
-   OPTIMIZACIONES ANTI-PARPADEO (GPU)
-   ============================================ */
-.emblaSlide img,
-.emblaSlide .bookCover {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  content-visibility: auto;
-}
-
-@media (hover: hover) {
-  .bookCard:hover {
-    isolation: isolate;
-  }
+.scrollProgressBar {
+  background: var(--color-accent);
+  height: 100%;
 }

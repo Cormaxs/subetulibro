@@ -1,10 +1,12 @@
 import Head from 'next/head';
 
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
+
 const SEO = ({
   title = 'SubeTuLibro',
   description = 'Plataforma de libros digitales. Descubre, lee y comparte tus novelas favoritas.',
-  canonical = 'https://subetulibro.com',
-  ogImage = 'https://subetulibro.com/og-image.png',
+  canonical = BASE_DOMAIN,
+  ogImage = `${BASE_DOMAIN}/og-image.png`,
   ogType = 'website',
   twitterCard = 'summary_large_image',
   twitterHandle = '@subetulibro',
