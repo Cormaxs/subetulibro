@@ -46,25 +46,28 @@ export default function SeeBookPage({ initialBook, bookId }) {
   // Mientras Next.js resuelve la ruta
   if (!router.isReady && !initialBook) return <BookDetailSkeleton />;
 
-  // Si no hay libro ni en servidor ni en cliente
-  if (error && !initialBook) {
+  const currentBook = book || initialBook;
+
+  if (!currentBook) {
     return (
       <Layout>
-        <main className={styles.mainContent}><BackLink /><h1>Libro no encontrado</h1></main>
+        <main className={styles.mainContent}>
+          <BackLink />
+          <h1>Libro no encontrado</h1>
+        </main>
       </Layout>
     );
   }
 
-  const currentBook = book || initialBook;
   const canonicalUrl = `${BASE_DOMAIN}/seeBook/${bookId}`;
-  const decodedPortada = currentBook?.portada ? currentBook.portada.replace(/&amp;/g, '&') : '';
+  const decodedPortada = currentBook.portada ? currentBook.portada.replace(/&amp;/g, '&') : '';
 
   return (
     <Layout>
       {/* Esto se renderiza en el SERVIDOR. El bot de WhatsApp ahora SÍ ve la imagen */}
       <BookSEO
-        title={`${book?.titulo ?? 'Cargando...'} | ${book?.autor ?? ''} | SubeTuLibro`}
-        description={currentBook.sinopsis?.substring(0, 160)}
+        title={`${currentBook.titulo ?? 'Cargando...'} | ${currentBook.autor ?? ''} | SubeTuLibro`}
+        description={currentBook.sinopsis ? currentBook.sinopsis.substring(0, 160) : ''}
         bookUrl={canonicalUrl}
         bookImage={decodedPortada}
         ogType="book"
@@ -94,6 +97,16 @@ export async function getServerSideProps(context) {
   try {
     // Llamamos a tu API internamente
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/books/${id}`);
+
+    if (!res.ok) {
+      return {
+        props: {
+          initialBook: null,
+          bookId: id,
+        },
+      };
+    }
+
     const initialBook = await res.json();
 
     return {
@@ -105,7 +118,7 @@ export async function getServerSideProps(context) {
   } catch (e) {
     console.error("Error en SSR:", e);
     return {
-      props: { initialBook: null, bookId: id }
+      props: { initialBook: null, bookId: id },
     };
   }
 }
