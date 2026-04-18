@@ -7,7 +7,7 @@ const SEO = ({
   description = 'Plataforma de libros digitales. Descubre, lee y comparte tus novelas favoritas.',
   canonical = BASE_DOMAIN,
   ogImage, // Eliminar el valor por defecto aquí
-  ogType = 'website',
+  ogType = 'website', // Valor por defecto, se puede sobrescribir
   twitterCard = 'summary_large_image',
   twitterHandle = '@subetulibro',
   keywords = 'libros, lectura, novelas, ebooks, literatura',

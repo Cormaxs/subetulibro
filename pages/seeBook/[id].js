@@ -114,6 +114,7 @@ export default function SeeBookPage({ initialBook, bookId, fullSlug }) {
         ogImage={ogImage}
         keywords={`${seoTitle}, ${currentBook.autor}, libro, lectura, digital`}
         author={currentBook.autor || 'SubeTuLibro'}
+        ogType="book" // Especificar el tipo Open Graph como "book"
       >
         {/* JSON-LD Schema - Estructura de datos */}
         <script
