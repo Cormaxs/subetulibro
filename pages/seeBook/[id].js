@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import Head from 'next/head';               // ← SEO inline
+import Head from 'next/head';
 import Layout from '../../components/layout/Layout';
 import BackLink from '../../components/features/book-detail/BackLink';
 import BookCover from '../../components/features/book-detail/BookCover';
@@ -9,7 +9,7 @@ import BookInfo from '../../components/features/book-detail/BookInfo';
 import DownloadButton from '../../components/features/book-detail/DownloadButton';
 import styles from '../../styles/BookDetail.module.css';
 
-const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://lectulandia.com';
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
 
 const fetcher = async (url) => {
   const response = await fetch(url);
@@ -53,86 +53,112 @@ export default function SeeBookPage({ initialBook, bookId, fullSlug }) {
     );
   }
 
-  // ---------- SEO: MISMO QUE EL PRIMER CÓDIGO ----------
-  const canonicalUrl = `${BASE_DOMAIN}/books/${fullSlug}`;  // ← igual al primero
-  const truncatedDescription = currentBook.sinopsis
-    ? currentBook.sinopsis.substring(0, 160)
-    : `Sinopsis no disponible para ${currentBook.titulo}.`;
+  // ---------- SEO OPTIMIZADO ----------
+  const canonicalUrl = `${BASE_DOMAIN}/seeBook/${fullSlug}`;
+  
+  // Garantizar imagen OG válida y absoluta
+  let ogImage = '';
+  if (currentBook.portada) {
+    if (currentBook.portada.startsWith('http')) {
+      ogImage = currentBook.portada.replace(/&amp;/g, '&');
+    } else if (currentBook.portada.startsWith('/')) {
+      ogImage = `${BASE_DOMAIN}${currentBook.portada}`.replace(/&amp;/g, '&');
+    } else {
+      ogImage = `${BASE_DOMAIN}/${currentBook.portada}`.replace(/&amp;/g, '&');
+    }
+  } else {
+    ogImage = `${BASE_DOMAIN}/og-image.png`;
+  }
+
+  const seoTitle = currentBook.titulo || 'Libro';
+  const seoDescription = currentBook.sinopsis
+    ? currentBook.sinopsis.substring(0, 160).trim()
+    : `Descubre "${seoTitle}" en SubeTuLibro. Lee y descarga libros digitales.`;
 
   const bookJsonLd = {
     "@context": "https://schema.org",
     "@type": "Book",
-    "name": currentBook.titulo,
+    "name": seoTitle,
     "author": {
       "@type": "Person",
-      "name": currentBook.autor
+      "name": currentBook.autor || 'Autor desconocido'
     },
-    "description": currentBook.sinopsis,
-    "image": currentBook.portada,
+    "description": currentBook.sinopsis || seoDescription,
+    "image": ogImage,
+    "url": canonicalUrl,
     ...(currentBook.averageRating && {
       "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": currentBook.averageRating,
+        "ratingValue": currentBook.averageRating.toString(),
         "bestRating": "5",
         "worstRating": "1",
-        "ratingCount": currentBook.reviewCount || 10
+        "ratingCount": currentBook.reviewCount?.toString() || "1"
       }
-    }),
-    "url": canonicalUrl,
-    "potentialAction": currentBook.link ? {
-      "@type": "DownloadAction",
-      "target": currentBook.link
-    } : undefined
+    })
   };
 
-  // Decodificar portada (solo si es necesario, igual que en segundo código)
-  const decodedPortada = currentBook.portada
-    ? (currentBook.portada.startsWith('http')
-        ? currentBook.portada.replace(/&amp;/g, '&')
-        : `${BASE_DOMAIN}${currentBook.portada}`.replace(/&amp;/g, '&'))
-    : '';
-
   // ========== CONSOLA: Verifica los meta tags ==========
-  console.log('📄 [SEO] Título:', `${currentBook.titulo} | ${currentBook.autor} | Lectulandiaa`);
-  console.log('📄 [SEO] Descripción:', `Lee la sinopsis completa de "${currentBook.titulo}" escrito por ${currentBook.autor}. ¡Descarga tu copia en Lectulandiaa.com!`);
-  console.log('📄 [SEO] Canonical:', canonicalUrl);
-  console.log('📄 [SEO] Imagen OG:', decodedPortada);
+  console.log('📄 [SEO] Título:', seoTitle);
+  console.log('📄 [SEO] Descripción:', seoDescription);
+  console.log('📄 [SEO] Canonical URL:', canonicalUrl);
+  console.log('📄 [SEO] Imagen OG:', ogImage);
   console.log('📄 [SEO] JSON-LD:', bookJsonLd);
   // ====================================================
 
   return (
     <Layout>
       <Head>
-        {/* Título igual al primer código */}
-        <title>{currentBook.titulo} | {currentBook.autor} | Lectulandiaa</title>
+        {/* Meta básico */}
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        {/* Title */}
+        <title>{seoTitle} | SubeTuLibro</title>
 
-        {/* Meta descripción igual */}
-        <meta
-          name="description"
-          content={`Lee la sinopsis completa de "${currentBook.titulo}" escrito por ${currentBook.autor}. ¡Descarga tu copia en Lectulandiaa.com!`}
-        />
+        {/* Meta Descripción */}
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={`${seoTitle}, ${currentBook.autor}, libro, lectura, digital`} />
 
-        {/* Canonical URL */}
+        {/* Canonical URL - CRÍTICO PARA OPENGRAPH */}
         <link rel="canonical" href={canonicalUrl} />
 
-        {/* Open Graph */}
-        <meta property="og:title" content={currentBook.titulo} />
-        <meta property="og:description" content={truncatedDescription} />
-        <meta property="og:image" content={decodedPortada} />
+        {/* Open Graph - Optimizado para redes sociales */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="book" />
-        <meta property="og:site_name" content="Lectulandiaa.com" />
+        <meta property="og:site_name" content="SubeTuLibro" />
+        <meta property="og:locale" content="es_ES" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={currentBook.titulo} />
-        <meta name="twitter:description" content={truncatedDescription} />
-        <meta name="twitter:image" content={decodedPortada} />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:creator" content="@subetulibro" />
+        <meta name="twitter:site" content="@subetulibro" />
 
-        {/* JSON-LD */}
+        {/* Autor y publishers */}
+        <meta name="author" content={currentBook.autor || 'SubeTuLibro'} />
+        <meta name="publisher" content="SubeTuLibro" />
+
+        {/* Otros meta tags */}
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+        <meta name="theme-color" content="#f97316" />
+
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+        {/* JSON-LD Schema - Estructura de datos */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(bookJsonLd) }}
+          key="book-jsonld"
         />
       </Head>
 
