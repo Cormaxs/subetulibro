@@ -66,11 +66,11 @@ export default function SeeBookPage({ initialBook, bookId }) {
     <Layout>
       {/* Esto se renderiza en el SERVIDOR. El bot de WhatsApp ahora SÍ ve la imagen */}
       <BookSEO
-        title={`${currentBook.titulo ?? 'Cargando...'} | ${currentBook.autor ?? ''} | SubeTuLibro`}
-        description={currentBook.sinopsis ? currentBook.sinopsis.substring(0, 160) : ''}
+        title={currentBook.titulo ?? 'Libro'}
+        description={currentBook.sinopsis ? currentBook.sinopsis.substring(0, 160) : 'Descripción no disponible'}
         bookUrl={canonicalUrl}
         bookImage={decodedPortada}
-        ogType="book"
+        ogType="website"
         author={currentBook.autor}
         averageRating={currentBook.averageRating}
         reviewCount={currentBook.reviewCount || 0}
