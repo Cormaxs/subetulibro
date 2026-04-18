@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { memo, useState } from 'react';
+import Image from 'next/image'; // Importar el componente Image
 import useAuth from '../../hooks/useAuth';
 import { createSlug } from '../../utils/slug';
 import { isValidImageUrl } from '../../utils/imageUtils';
@@ -8,7 +9,6 @@ import styles from '../../styles/BookCard.module.css';
 
 const BookCard = ({ book, priority = false }) => {
     const [imageError, setImageError] = useState(false);
-    const [imageLoaded, setImageLoaded] = useState(false);
     const { user } = useAuth();
     const isAdmin = user?.role === 'admin';
     const slug = createSlug(book.titulo);
@@ -35,11 +35,6 @@ const BookCard = ({ book, priority = false }) => {
 
     const handleImageError = () => {
         setImageError(true);
-        setImageLoaded(false);
-    };
-
-    const handleImageLoad = () => {
-        setImageLoaded(true);
     };
 
     const validCover = isValidImageUrl(decodedPortada) && !imageError;
@@ -68,19 +63,16 @@ const BookCard = ({ book, priority = false }) => {
                         )}
 
                         {validCover ? (
-                            <>
-                                {!imageLoaded && (
-                                    <div className={styles.imageSkeleton} />
-                                )}
-                                <img
-                                    src={decodedPortada}
-                                    alt={`Portada del libro: ${book.titulo}`}
-                                    className={styles.bookCover}
-                                    onError={handleImageError}
-                                    onLoad={handleImageLoad}
-                                    loading={priority ? 'eager' : 'lazy'}
-                                />
-                            </>
+                            <Image
+                                src={decodedPortada}
+                                alt={`Portada del libro: ${book.titulo}`}
+                                fill // La imagen llenará el contenedor padre
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" // Tamaños para diferentes viewports
+                                style={{ objectFit: 'cover' }} // Estilo para cubrir el área
+                                onError={handleImageError}
+                                priority={priority} // Carga prioritaria para las primeras imágenes
+                                className={styles.bookCover} // Mantener la clase para estilos adicionales si los hay
+                            />
                         ) : (
                             <div className={styles.placeholderCover}>
                                 <span className={styles.placeholderIcon}>📕</span>

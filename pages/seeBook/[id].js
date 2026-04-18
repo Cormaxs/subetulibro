@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import Layout from '../../components/layout/Layout';
 import BackLink from '../../components/features/book-detail/BackLink';
 import BookCover from '../../components/features/book-detail/BookCover';
 import BookInfo from '../../components/features/book-detail/BookInfo';
 import DownloadButton from '../../components/features/book-detail/DownloadButton';
+import SEO from '../../components/seo/SEO'; // Importar el componente SEO
 import styles from '../../styles/BookDetail.module.css';
 
 const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
@@ -107,60 +107,21 @@ export default function SeeBookPage({ initialBook, bookId, fullSlug }) {
 
   return (
     <Layout>
-      <Head>
-        {/* Meta básico */}
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        
-        {/* Title */}
-        <title>{seoTitle} | SubeTuLibro</title>
-
-        {/* Meta Descripción */}
-        <meta name="description" content={seoDescription} />
-        <meta name="keywords" content={`${seoTitle}, ${currentBook.autor}, libro, lectura, digital`} />
-
-        {/* Canonical URL - CRÍTICO PARA OPENGRAPH */}
-        <link rel="canonical" href={canonicalUrl} />
-
-        {/* Open Graph - Optimizado para redes sociales */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:type" content="image/jpeg" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="SubeTuLibro" />
-        <meta property="og:locale" content="es_ES" />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seoTitle} />
-        <meta name="twitter:description" content={seoDescription} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:creator" content="@subetulibro" />
-        <meta name="twitter:site" content="@subetulibro" />
-
-        {/* Autor y publishers */}
-        <meta name="author" content={currentBook.autor || 'SubeTuLibro'} />
-        <meta name="publisher" content="SubeTuLibro" />
-
-        {/* Otros meta tags */}
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
-        <meta name="theme-color" content="#f97316" />
-
-        {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
+      <SEO
+        title={`${seoTitle} | SubeTuLibro`}
+        description={seoDescription}
+        canonical={canonicalUrl}
+        ogImage={ogImage}
+        keywords={`${seoTitle}, ${currentBook.autor}, libro, lectura, digital`}
+        author={currentBook.autor || 'SubeTuLibro'}
+      >
         {/* JSON-LD Schema - Estructura de datos */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(bookJsonLd) }}
           key="book-jsonld"
         />
-      </Head>
+      </SEO>
 
       <main className={styles.mainContent}>
         <BackLink />

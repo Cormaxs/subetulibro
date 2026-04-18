@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Image from 'next/image'; // Importar el componente Image
 import { isValidImageUrl } from '../../../utils/imageUtils';
 import styles from '../../../styles/BookDetail.module.css';
 
@@ -30,11 +31,14 @@ const BookCover = ({ book }) => {
             
             {isValidImageUrl(decodedPortada) && !imageError ? (
                 <div className={styles.imageContainer}>
-                    <img
+                    <Image
                         src={decodedPortada}
                         alt={`Portada de ${book.titulo}`}
-                        className={styles.bookCoverLarge}
+                        width={300} // Ancho de la imagen
+                        height={450} // Alto de la imagen (300 * 3/2)
+                        objectFit="cover" // Para que la imagen cubra el área sin distorsionarse
                         onError={handleImageError}
+                        className={styles.bookCoverLarge} // Mantener la clase para estilos adicionales si los hay
                     />
                 </div>
             ) : (
