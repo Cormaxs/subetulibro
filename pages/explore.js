@@ -8,10 +8,12 @@ import styles from '../styles/Home.module.css';
 const BASE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'https://subetulibro.com';
 
 export default function Explore({ booksData, currentPage, totalPages, error, currentQuery }) {
-    const pageTitle = currentQuery ? `Buscar: ${currentQuery}` : `Explorar Libros - Página ${currentPage}`;
+    const pageTitle = currentQuery 
+        ? `Resultados de búsqueda para "${currentQuery}" en SubeTuLibro - Explora nuestra colección` 
+        : `Explora miles de libros digitales en SubeTuLibro - Página ${currentPage} de ${totalPages}`;
     const pageDescription = currentQuery
-        ? `Resultados de búsqueda para "${currentQuery}". Encuentra libros, autores y géneros.`
-        : `Explora nuestro catálogo completo de libros digitales. Página ${currentPage} de ${totalPages}.`;
+        ? `Descubre y descarga libros digitales gratis y premium. Encuentra los mejores títulos, autores y géneros en nuestros resultados de búsqueda para "${currentQuery}".`
+        : `Sumérgete en un vasto catálogo de libros digitales. Explora novelas, cuentos, ensayos y más. Descubre tu próxima lectura favorita en la página ${currentPage} de ${totalPages} de SubeTuLibro.`;
 
     const breadcrumbs = [
         { name: 'Inicio', url: BASE_DOMAIN },

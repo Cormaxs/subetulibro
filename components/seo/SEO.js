@@ -6,7 +6,7 @@ const SEO = ({
   title = 'SubeTuLibro',
   description = 'Plataforma de libros digitales. Descubre, lee y comparte tus novelas favoritas.',
   canonical = BASE_DOMAIN,
-  ogImage = `${BASE_DOMAIN}/og-image.png`,
+  ogImage, // Eliminar el valor por defecto aquí
   ogType = 'website',
   twitterCard = 'summary_large_image',
   twitterHandle = '@subetulibro',
@@ -16,6 +16,11 @@ const SEO = ({
 }) => {
   const siteName = 'SubeTuLibro';
   const locale = 'es_ES';
+
+  // Asegurar que ogImage sea una URL absoluta
+  const finalOgImage = ogImage 
+    ? (ogImage.startsWith('http') ? ogImage : `${BASE_DOMAIN}${ogImage.startsWith('/') ? '' : '/'}${ogImage}`)
+    : `${BASE_DOMAIN}/og-image.png`; // Fallback a la imagen por defecto
 
   return (
     <Head>
@@ -36,7 +41,7 @@ const SEO = ({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
       <meta property="og:site_name" content={siteName} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={finalOgImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={title} />
@@ -46,7 +51,7 @@ const SEO = ({
       <meta name="twitter:card" content={twitterCard} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={finalOgImage} />
       <meta name="twitter:image:alt" content={title} />
       {twitterHandle && <meta name="twitter:creator" content={twitterHandle} />}
 
