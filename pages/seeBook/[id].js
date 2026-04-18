@@ -60,7 +60,7 @@ export default function SeeBookPage({ initialBook, bookId }) {
   }
 
   const canonicalUrl = `${BASE_DOMAIN}/seeBook/${bookId}`;
-  const decodedPortada = currentBook.portada ? currentBook.portada.replace(/&amp;/g, '&') : '';
+  const decodedPortada = currentBook.portada ? (currentBook.portada.startsWith('http') ? currentBook.portada.replace(/&amp;/g, '&') : `${BASE_DOMAIN}${currentBook.portada}`.replace(/&amp;/g, '&')) : '';
 
   return (
     <Layout>
